@@ -1,0 +1,1 @@
+const VALIDATORS_LIST_API = "https://lcd.n01c01p1f2.commercio.network/staking/validators?status=bonded";
