@@ -11,8 +11,8 @@ Using it we can ensure separation of concerns between the logic and the presenta
 the `lib/bloc` library and all act as a middle layer between the logic part and the view part, representing the 
 presentation layer themselves. 
 
-We tried to follow the [architecture idea]() that is described on the BLoC library page. This means we have 
-the following code dependencies 
+We tried to follow the [architecture idea](https://felangel.github.io/bloc/#/architecture) that is described on the 
+BLoC library page. This means we have the following code dependencies 
 
 ```
 Page -> BLoC -> Repository -> Source
