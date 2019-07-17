@@ -1,5 +1,4 @@
 import 'package:borsellino/repository/repositories.dart';
-import 'package:borsellino/source/sources.dart';
 import 'package:dependencies/dependencies.dart';
 
 class RepositoryModule implements Module {
@@ -7,6 +6,6 @@ class RepositoryModule implements Module {
   void configure(Binder binder) {
     binder
       ..bindLazySingleton((injector, p) =>
-          ValidatorsRepository(source: injector.get<ValidatorSource>()));
+          ValidatorsRepository(validatorsSource: injector.get()));
   }
 }

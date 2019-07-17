@@ -1,17 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
 class Validator {
-  String name;
-  String address;
-  String tokens;
-  String commission;
+  final ValidatorStatus status;
+  final String name;
+  final String address;
+  final String identity;
+  final double tokens;
+  final double commissionRate;
+  final double yieldPercentage;
+
   Validator({
+    @required this.status,
+    @required this.identity,
     @required this.name,
     @required this.address,
     @required this.tokens,
-    @required this.commission,
-  }) : assert(name != null &&
+    @required this.commissionRate,
+    @required this.yieldPercentage,
+  }) : assert(status != null &&
+            name != null &&
             address != null &&
             tokens != null &&
-            commission != null);
+            commissionRate != null &&
+            yieldPercentage != null);
 }
+
+enum ValidatorStatus { ACTIVE, INACTIVE, UNKNOWN }
