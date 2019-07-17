@@ -1,18 +1,20 @@
 import 'dart:convert';
 
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/source/validators/apis.dart';
+import 'package:borsellino/source/apis/apis.dart';
 import 'package:http/http.dart' as http;
 
 /// Source that should be used when retrieving data related to
 /// validators.
 class ValidatorSource {
+  final ApiEndpoints endpoints;
   final http.Client httpClient;
 
-  ValidatorSource({this.httpClient});
+  ValidatorSource({this.endpoints, this.httpClient});
 
   Future<List<Validator>> getValidators() async {
-    final response = await httpClient.get(VALIDATORS_LIST_API);
+    final apiUrl = "${endpoints.validatorsList}?status=bonded";
+    final response = await httpClient.get(apiUrl);
 
     if (response.statusCode == 200) {
       // If the server returns OK, parse the JSON

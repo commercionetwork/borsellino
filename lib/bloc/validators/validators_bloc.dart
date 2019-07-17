@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/bloc/validators/validators_event.dart';
+import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/repository/repositories.dart';
-import 'package:meta/meta.dart';
 import './bloc.dart';
 
 class ValidatorsBloc extends Bloc<ValidatorsEvent, ValidatorsState> {
-  final ValidatorsRepository repository;
 
-  ValidatorsBloc({@required this.repository}): assert(repository != null);
+  final ValidatorsRepository _repository = BorsellinoInjector.get();
 
   @override
   ValidatorsState get initialState => EmptyValidatorsState();
@@ -23,7 +22,7 @@ class ValidatorsBloc extends Bloc<ValidatorsEvent, ValidatorsState> {
 
       try {
         // Get the list from the repository
-        final List<Validator> validators = await repository.getValidatorsList();
+        final List<Validator> validators = await _repository.getValidatorsList();
 
         // Notify we got the list
         yield ValidatorsLoadedState(validators: validators);
@@ -36,4 +35,5 @@ class ValidatorsBloc extends Bloc<ValidatorsEvent, ValidatorsState> {
       }
     }
   }
+
 }

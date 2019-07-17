@@ -1,16 +1,39 @@
-# flutter_hackatom
+# Borsellino
+This project contains the Flutter version of Borsellino, the [Commercio.network](https://commercio.network)'s 
+official wallet.  
 
-A new Flutter project.
+## Developing
+Following you will find some tips on how to easily develop your custom version of Borsellino.
 
-## Getting Started
+### BLoC
+The whole project is based on the [BLoC Library](https://felangel.github.io/bloc/#/).  
+Using it we can ensure separation of concerns between the logic and the presentation part. BLoC are all found inside 
+the `lib/bloc` library and all act as a middle layer between the logic part and the view part, representing the 
+presentation layer themselves. 
 
-This project is a starting point for a Flutter application.
+We tried to follow the [architecture idea]() that is described on the BLoC library page. This means we have 
+the following code dependencies 
 
-A few resources to get you started if this is your first Flutter project:
+```
+Page -> BLoC -> Repository -> Source
+``` 
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+And the following data flow:
+```
+Page -> BLoC -> Repository -> Source 
+                                |
+                 Data is fetched from internet
+                                |
+                                V
+Page <- BLoC <- Repository <- Source
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Dependency injection
+In order to prevent having a lot of dependencies into the `main` function, we used the 
+[dependency injection pattern](https://en.wikipedia.org/wiki/Dependency_injection).  
+In order to do so, we used the [dependencies_flutter Dart library](https://pub.dev/packages/dependencies_flutter) 
+following the [Medium article](https://medium.com/@marcguilera/dependency-injection-in-flutter-625650195a98) 
+made by its creator. 
+
+We've put all the modules that provide the different components into the `lib/dependency_injection` folder.  
+The main class that acts as a singleton to get the dependencies is located into the `injector.dart` file. 
