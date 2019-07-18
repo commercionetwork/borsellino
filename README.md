@@ -8,11 +8,11 @@ Following you will find some tips on how to easily develop your custom version o
 ### BLoC
 The whole project is based on the [BLoC Library](https://felangel.github.io/bloc/#/).  
 Using it we can ensure separation of concerns between the logic and the presentation part. BLoC are all found inside 
-the `lib/bloc` library and all act as a middle layer between the logic part and the view part, representing the 
+the `lib/bloc` folder and all act as a middle layer between the logic part and the view part, representing the 
 presentation layer themselves. 
 
 We tried to follow the [architecture idea](https://felangel.github.io/bloc/#/architecture) that is described on the 
-BLoC library page. This means we have the following code dependencies 
+BLoC library page. This means we have the following code dependencies:
 
 ```
 Page -> BLoC -> Repository -> Source
@@ -22,7 +22,8 @@ And the following data flow:
 ```
 Page -> BLoC -> Repository -> Source 
                                 |
-                 Data is fetched from internet
+                 Data is fetched from internet,
+                 saved on the device or manipulated
                                 |
                                 V
 Page <- BLoC <- Repository <- Source
@@ -37,3 +38,6 @@ made by its creator.
 
 We've put all the modules that provide the different components into the `lib/dependency_injection` folder.  
 The main class that acts as a singleton to get the dependencies is located into the `injector.dart` file. 
+
+That class is used inside the BLoC implementations in order to get a reference to the repositories that each one
+uses to fetch or save the data.
