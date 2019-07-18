@@ -6,6 +6,8 @@ class RepositoryModule implements Module {
   void configure(Binder binder) {
     binder
       ..bindLazySingleton((injector, p) =>
-          ValidatorsRepository(validatorsSource: injector.get()));
+          ValidatorsRepository(validatorsSource: injector.get()))
+      ..bindLazySingleton(
+          (injector, p) => MnemonicRepository(mnemonicSource: injector.get()));
   }
 }

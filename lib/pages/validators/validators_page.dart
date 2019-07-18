@@ -1,7 +1,4 @@
 import 'package:borsellino/bloc/blocs.dart';
-import 'package:borsellino/bloc/validators/validators_bloc.dart';
-import 'package:borsellino/bloc/validators/validators_event.dart';
-import 'package:borsellino/bloc/validators/validators_state.dart';
 import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

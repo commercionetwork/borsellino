@@ -10,6 +10,7 @@ class SourcesModule implements Module {
             endpoints: injector.get(),
             httpClient: injector.get(),
             converter: ValidatorConverter(),
-          ));
+          ))
+      ..bindLazySingleton((injector, p) => MnemonicSource());
   }
 }
