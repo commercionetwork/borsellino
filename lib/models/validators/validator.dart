@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
+/// Contains the data relative to a single validator.
 class Validator {
   final ValidatorStatus status;
   final String name;
