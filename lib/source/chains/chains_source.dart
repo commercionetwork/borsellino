@@ -28,7 +28,6 @@ class ChainsSource {
     if (response.statusCode == 200) {
       // If the serve returns OK, parse the JSON
       final chainsInfoList = json.decode(response.body) as List;
-      print("Received chains from the network: $chainsInfoList");
 
       // Get the JSON objects
       final chainsInfoJsons = chainsInfoList
@@ -50,6 +49,8 @@ class ChainsSource {
 
   /// Allows to retrieve the chain having the given id.
   /// Throws exception if no chain is found.
+  /// TODO: This should have a dedicated endpoint and not the list every time
+  /// TODO: Maybe add a local database for faster loading?
   Future<ChainInfo> getChainById(String chainId) async {
     final chains = await getChains();
     final chainsData = chains.where((chain) => chain.id == chainId).toList();

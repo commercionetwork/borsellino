@@ -89,7 +89,6 @@ class AccountsSource {
   Future<List<Account>> listAccounts() async {
     // List all the private keys
     final privateKeys = await secureStorage.readAll();
-    print("Private keys: $privateKeys");
 
     // Get a reference to the SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -104,7 +103,6 @@ class AccountsSource {
 
       // Get the chain id from the preferences
       final chain = prefs.getString(address);
-      print("Chain for $address: $chain");
 
       // Get the chain data from the source
       final chainData = await chainsSource.getChainById(chain);
@@ -118,13 +116,9 @@ class AccountsSource {
         chainData,
       );
 
-      print("Recovered account ${account.address} for chain $chain");
-
       // Add the generated account into the list
       accounts.add(account);
     }
-
-    print(accounts);
 
     // Return the accounts list
     return accounts;
@@ -142,8 +136,6 @@ class AccountsSource {
       return null;
     }
 
-    print("Latest account: $accountAddress");
-
     // List the accounts
     final accounts = await listAccounts();
 
@@ -152,7 +144,7 @@ class AccountsSource {
         accounts.where((account) => account.address == accountAddress).toList();
 
     if (validAccounts.isEmpty) {
-      print("No matching account found");
+      print("No account matching the latest one found");
       // No account with same address found
       return null;
     } else {

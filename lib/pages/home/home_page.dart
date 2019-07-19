@@ -81,6 +81,6 @@ class _HomePageState extends State<HomePage>
   }
 
   void _addAccount(BuildContext context) {
-    Navigator.pushNamed(context, AddAccountPage.routeName);
+    AddAccountDialog.show(context);
   }
 }

@@ -52,8 +52,6 @@ class _VerificationWordsGeneratedBodyState
       child: BlocBuilder(
         bloc: bloc,
         builder: (_, state) {
-          print(state);
-
           return Column(
             children: <Widget>[
               ..._buildWordsInputs(),
