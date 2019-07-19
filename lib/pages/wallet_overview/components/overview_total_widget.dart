@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
 
@@ -5,46 +6,43 @@ import 'package:flutter/material.dart';
 /// has associated.
 class WalletTotalWidget extends StatelessWidget {
   final Wallet wallet;
+  final Coin coin;
 
-  const WalletTotalWidget({Key key, this.wallet}) : super(key: key);
+  const WalletTotalWidget({
+    Key key,
+    this.wallet,
+    this.coin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Get the whole amount
+    final availableCoin = wallet.availableCoins
+        .where((currentCoin) => currentCoin.denom == coin.denom)
+        .toList();
+
+    var denom = coin?.denom ?? wallet.account.chain.defaultTokenName;
+
+    var availableAmount = 0.0;
+    if (availableCoin.isNotEmpty) {
+      availableAmount = availableCoin[0].amount;
+    }
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(bottom: 5),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'CoinName',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Align(
-          child: Container(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Text(
-              '0.0000000',
-              style: TextStyle(fontSize: 18),
-            ),
+        Text(
+          StringUtils.capitalize(denom),
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          alignment: Alignment.center,
         ),
-        Align(
-          child: Text('\$ 0.00'),
-          alignment: Alignment.center,
-        )
+        Text(
+          availableAmount.toStringAsFixed(6),
+          style: TextStyle(fontSize: 18),
+        ),
       ],
     );
   }

@@ -20,9 +20,22 @@ class WalletOverviewBody extends StatelessWidget {
         children: <Widget>[
           WalletAddressWidget(wallet),
           SizedBox(height: 16),
-          WalletBalanceWidget(wallet),
+          _buildCoinData(wallet)
         ],
       ),
     );
+  }
+
+  Widget _buildCoinData(Wallet wallet) {
+
+    // TODO: Handle multiple coins
+    Coin coin;
+    if (wallet.availableCoins.isNotEmpty) {
+      coin = wallet.availableCoins[0];
+    } else if (wallet.rewards.isNotEmpty) {
+      coin = wallet.rewards[0];
+    }
+
+    return WalletBalanceWidget(wallet: wallet, coin: coin);
   }
 }

@@ -8,8 +8,9 @@ import 'wallet_balance_item.dart';
 /// available, etc.
 class WalletBalanceWidget extends StatelessWidget {
   final Wallet wallet;
+  final Coin coin;
 
-  WalletBalanceWidget(this.wallet);
+  WalletBalanceWidget({this.wallet, this.coin});
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +24,27 @@ class WalletBalanceWidget extends StatelessWidget {
       padding: EdgeInsets.all(6),
       child: Column(
         children: <Widget>[
-          WalletTotalWidget(wallet: wallet),
+          WalletTotalWidget(wallet: wallet, coin: coin),
           Divider(color: Colors.black),
-          WalletBalanceItem(title: "Available", amount: 0),
+          WalletBalanceItem(
+            title: "Available",
+            amount: wallet.getAvailable(coin),
+          ),
           spacer,
-          WalletBalanceItem(title: "Delegated", amount: 0),
+          WalletBalanceItem(
+            title: "Delegated",
+            amount: wallet.getDelegated(coin),
+          ),
           spacer,
-          WalletBalanceItem(title: "Unbonding", amount: 0),
+          WalletBalanceItem(
+            title: "Unbonding",
+            amount: wallet.getUnbonding(coin),
+          ),
           spacer,
-          WalletBalanceItem(title: "Reward", amount: 0),
+          WalletBalanceItem(
+            title: "Reward",
+            amount: wallet.getRewards(coin),
+          ),
         ],
       ),
     );

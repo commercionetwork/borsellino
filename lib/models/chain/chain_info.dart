@@ -9,6 +9,7 @@ class ChainInfo {
   final String name;
   final String lcdUrl;
   final String rpcUrl;
+  final String defaultTokenName;
 
   // Bech32 Human Readable part used to create the addresses
   final String bech32Hrp;
@@ -20,9 +21,11 @@ class ChainInfo {
     @required this.lcdUrl,
     @required this.rpcUrl,
     @required this.bech32Hrp,
+    @required this.defaultTokenName,
   })  : assert(id != null),
         assert(name != null),
         assert(lcdUrl != null),
         assert(rpcUrl != null),
-        assert(bech32Hrp != null);
+        assert(bech32Hrp != null),
+        assert(defaultTokenName != null);
 }
