@@ -3,12 +3,12 @@ import 'package:borsellino/pages/home/components/home_tabs.dart';
 import 'package:flutter/material.dart';
 
 // App bar of the home page
-AppBar homeAppBar(TabController controller) {
+AppBar homeAppBar(TabController controller, int pageIndex) {
   return AppBar(
     title: Text(APP_NAME),
-    bottom: TabBar(
+    bottom: pageIndex == 1 ? TabBar(
       controller: controller,
       tabs: homeTabs,
-    ),
+    ) : null
   );
 }
