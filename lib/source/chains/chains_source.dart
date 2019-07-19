@@ -47,4 +47,18 @@ class ChainsSource {
       throw Exception("Failed to load chains list");
     }
   }
+
+  /// Allows to retrieve the chain having the given id.
+  /// Throws exception if no chain is found.
+  Future<ChainInfo> getChainById(String chainId) async {
+    final chains = await getChains();
+    final chainsData =
+        chains.takeWhile((chain) => chain.id == chainId).take(1).toList();
+
+    if (chainsData.isEmpty) {
+      throw Exception("Chain with id $chainId not supported");
+    } else {
+      return chainsData[0];
+    }
+  }
 }

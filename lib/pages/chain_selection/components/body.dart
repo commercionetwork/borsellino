@@ -1,12 +1,17 @@
 import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
 
+typedef void ChainSelectionCallback(ChainInfo chain);
+
 class ChainSelectionBody extends StatefulWidget {
   final List<ChainInfo> chains;
+  final ChainSelectionCallback callback;
 
   ChainSelectionBody({
     @required this.chains,
-  }) : assert(chains != null);
+    @required this.callback,
+  })  : assert(chains != null),
+        assert(callback != null);
 
   @override
   _ChainSelectionBodyState createState() => _ChainSelectionBodyState();
@@ -26,8 +31,7 @@ class _ChainSelectionBodyState extends State<ChainSelectionBody> {
             leading: _buildIcon(chain),
             title: Text(chain.name),
           ),
-          onTap: () => Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text(index.toString()))),
+          onTap: () => widget.callback(chain),
         );
       },
       separatorBuilder: (context, index) => Divider(height: 0),

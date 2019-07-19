@@ -6,7 +6,6 @@ import './bloc.dart';
 
 class ChainSelectionBloc
     extends Bloc<ChainSelectionEvent, ChainSelectionState> {
-
   final ChainsRepository repository = BorsellinoInjector.get();
 
   @override
@@ -16,20 +15,22 @@ class ChainSelectionBloc
   Stream<ChainSelectionState> mapEventToState(
     ChainSelectionEvent event,
   ) async* {
-
     if (event is LoadChainsEvent) {
       // Emit the loading state
       yield LoadingChainsState();
 
-      // TODO: Load the chains
       try {
+        // Get the chains
         final chains = await repository.listChains();
+
+        // Tell that the chains are loaded
         yield LoadedChainsState(chains);
       } catch (exception) {
         print("Chains error: $exception");
+
+        // Tell there was an error
         yield ErrorChainsState();
       }
     }
-
   }
 }

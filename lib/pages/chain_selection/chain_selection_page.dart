@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:borsellino/bloc/blocs.dart';
-import 'package:borsellino/bloc/chain_selection/chain_selection_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,7 +51,7 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
         },
         child: BlocBuilder(
           bloc: bloc,
-          builder: (_, ChainSelectionState state) {
+          builder: (BuildContext context, ChainSelectionState state) {
             if (state is InitialChainSelectionState) {
               bloc.dispatch(LoadChainsEvent());
             }
@@ -60,7 +59,12 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
             if (state is LoadedChainsState) {
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
-              return ChainSelectionBody(chains: state.chains);
+              return ChainSelectionBody(
+                chains: state.chains,
+                callback: (chain) {
+                  // TODO: Navigate to the account generation page
+                },
+              );
             }
 
             if (state is ErrorChainsState) {
