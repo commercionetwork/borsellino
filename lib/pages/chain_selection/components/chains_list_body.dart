@@ -1,23 +1,24 @@
+import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
 
 typedef void ChainSelectionCallback(ChainInfo chain);
 
-class ChainSelectionBody extends StatefulWidget {
+class ChainListBody extends StatefulWidget {
   final List<ChainInfo> chains;
   final ChainSelectionCallback callback;
 
-  ChainSelectionBody({
+  ChainListBody({
     @required this.chains,
     @required this.callback,
   })  : assert(chains != null),
         assert(callback != null);
 
   @override
-  _ChainSelectionBodyState createState() => _ChainSelectionBodyState();
+  _ChainListBodyState createState() => _ChainListBodyState();
 }
 
-class _ChainSelectionBodyState extends State<ChainSelectionBody> {
+class _ChainListBodyState extends State<ChainListBody> {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -39,7 +40,6 @@ class _ChainSelectionBodyState extends State<ChainSelectionBody> {
   }
 
   Widget _buildIcon(ChainInfo chain) {
-    return Image.network(
-        chain.iconUrl ?? "https://png.pngtree.com/svg/20160401/a381a1569c.png");
+    return Image.network(chain.iconUrl ?? DEFAULT_CHAIN_IMAGE_URL);
   }
 }

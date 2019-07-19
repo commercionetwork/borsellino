@@ -6,8 +6,9 @@ import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'components/body.dart';
+import 'components/chains_list_body.dart';
 import 'components/arguments.dart';
+import 'components/generating_account_dialog.dart';
 
 export 'components/arguments.dart';
 
@@ -21,8 +22,7 @@ class ChainSelectionPage extends StatefulWidget {
 }
 
 class _ChainSelectionPageState extends State<ChainSelectionPage> {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  final _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
   Completer<void> _refreshCompleter;
 
@@ -39,8 +39,6 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
     final ChainSelectionArguments args =
         ModalRoute.of(context).settings.arguments;
 
-    print(args.mnemonic);
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Select a chain"),
@@ -54,7 +52,6 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
         child: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, ChainSelectionState state) {
-
             // Initial state
             if (state is InitialChainSelectionState) {
               bloc.dispatch(LoadChainsEvent());
@@ -64,10 +61,10 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
             if (state is LoadedChainsState) {
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
-              return ChainSelectionBody(
+              return ChainListBody(
                 chains: state.chains,
                 callback: (chain) {
-                  _showAccountGenerationPage(args, chain, context);
+                  _onChainSelected(context, bloc, args, chain);
                 },
               );
             }
@@ -96,18 +93,47 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
     );
   }
 
-  void _showAccountGenerationPage(
+  /// Called when a chain has been selected.
+  /// It shows a popup and start the generation of the account
+  void _onChainSelected(
+    BuildContext context,
+    ChainSelectionBloc bloc,
+    ChainSelectionArguments args,
+    ChainInfo chain,
+  ) {
+    // Show the loading popup
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => generatingAccountDialog(),
+    );
+
+    // Generate the account
+    _generateAccount(bloc, args, chain, context);
+  }
+
+  /// Allows to generate a new account using the given [bloc],
+  /// [args] and [chain].
+  /// Once the generation has finished, it brings the user to the
+  /// [HomePage].
+  void _generateAccount(
+    ChainSelectionBloc chainSelectionBloc,
     ChainSelectionArguments args,
     ChainInfo chain,
     BuildContext context,
-  ) {
-    final accountGenerationArguments =
-        AccountGenerationArgs(mnemonic: args.mnemonic, chainInfo: chain);
+  ) async {
+    // Generate the account
+    await chainSelectionBloc.generateAccount(
+      mnemonic: args.mnemonic,
+      account: args.account,
+      chainInfo: chain,
+    );
+
+    // Go to the home page
     Navigator.pushNamedAndRemoveUntil(
       context,
-      AccountGenerationPage.routeName,
+      HomePage.routeName,
       (_) => false,
-      arguments: accountGenerationArguments,
     );
   }
 }

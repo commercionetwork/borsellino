@@ -39,9 +39,9 @@ BlocProvider selectChainBlocProvider() {
   );
 }
 
-BlocProvider generateAccountBlocProvider() {
-  return BlocProvider<AccountGenerationBloc>(
-    builder: (context) => AccountGenerationBloc(),
-    child: AccountGenerationPage(),
+BlocProvider accountSelectionBlocProvider() {
+  return BlocProvider<AccountSelectionBloc>(
+    builder: (context) => AccountSelectionBloc(),
+    child: AccountSelectionPage(),
   );
 }

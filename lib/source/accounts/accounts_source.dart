@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,16 +28,14 @@ class AccountsSource {
         assert(secureStorage != null),
         assert(accountHelper != null);
 
-  /// Generates and stores an account associated to the
-  /// given [mnemonic] for the given [chain].
-  /// Returns the account one it has been stored.
-  Future<Account> createAndStoreAccount(
-    List<String> mnemonic,
+  /// Creates a new account based on the given [privateKey] bytes and for
+  /// the given [chain]. After creating it, it stores the private key into
+  /// the secure storage and the address and chain relation into the
+  /// preferences for later retrieval.
+  Future<Account> _createAndSaveAccount(
+    Uint8List privateKey,
     ChainInfo chain,
   ) async {
-    // Generate the private key
-    final privateKey = await accountHelper.generatePrivateKey(mnemonic);
-
     // Generate the account
     final account = await accountHelper.generateAccount(privateKey, chain);
 
@@ -49,8 +49,34 @@ class AccountsSource {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(account.address, chain.id);
 
-    // Return the created account
     return account;
+  }
+
+  /// Generates and stores an account associated to the
+  /// given [mnemonic] for the given [chain].
+  /// Returns the account one it has been stored.
+  Future<Account> createAndStoreAccount(
+    List<String> mnemonic,
+    ChainInfo chain,
+  ) async {
+    // Generate the private key
+    final privateKey = await accountHelper.generatePrivateKey(mnemonic);
+
+    // Create and save the account
+    return await _createAndSaveAccount(privateKey, chain);
+  }
+
+  /// Converts the given [account] into a new one made for the given [chain].
+  Future<Account> convertAndStoreAccount(
+    Account account,
+    ChainInfo chain,
+  ) async {
+    // Get the existing private key
+    final privateKey = await secureStorage.read(key: account.address);
+    final privateKeyBytes = HEX.decode(privateKey);
+
+    // Generate a new account and save it
+    return await _createAndSaveAccount(privateKeyBytes, chain);
   }
 
   /// Allows to set the given [account] as the currently used account.
@@ -63,7 +89,6 @@ class AccountsSource {
   Future<List<Account>> listAccounts() async {
     // List all the private keys
     final privateKeys = await secureStorage.readAll();
-    print("Private keys: $privateKeys");
 
     // Get a reference to the SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -78,7 +103,6 @@ class AccountsSource {
 
       // Get the chain id from the preferences
       final chain = prefs.getString(address);
-      print("Chain for $address: $chain");
 
       // Get the chain data from the source
       final chainData = await chainsSource.getChainById(chain);
@@ -92,13 +116,9 @@ class AccountsSource {
         chainData,
       );
 
-      print("Recovered account ${account.address} for chain $chain");
-
       // Add the generated account into the list
       accounts.add(account);
     }
-
-    print(accounts);
 
     // Return the accounts list
     return accounts;
@@ -116,8 +136,6 @@ class AccountsSource {
       return null;
     }
 
-    print("Latest account: $accountAddress");
-
     // List the accounts
     final accounts = await listAccounts();
 
@@ -126,12 +144,19 @@ class AccountsSource {
         accounts.where((account) => account.address == accountAddress).toList();
 
     if (validAccounts.isEmpty) {
-      print("No matching account found");
+      print("No account matching the latest one found");
       // No account with same address found
       return null;
     } else {
       // Account found
       return validAccounts[0];
     }
+  }
+
+  /// Allows to logout setting the current account as null.
+  Future<void> logout() async {
+    // Set the current account as null
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_currentAccountKey, null);
   }
 }

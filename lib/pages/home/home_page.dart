@@ -1,13 +1,12 @@
-import 'package:bitcoin_flutter/bitcoin_flutter.dart';
-import 'package:borsellino/models/models.dart';
-import 'package:borsellino/pages/home/components/home_app_bar.dart';
+import 'package:borsellino/constants/constants.dart';
+import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
-import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:borsellino/pages/pages.dart';
+import 'package:borsellino/repository/repositories.dart';
+import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:borsellino/pages/wallet_overview/wallet_overview_page.dart';
 import 'package:flutter/material.dart';
-
 
 /// Represents the home page of the application
 class HomePage extends StatefulWidget {
@@ -18,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-
+  final AccountsRepository accountsRepository = BorsellinoInjector.get();
   TabController _tabController;
 
   int _navBarCurrentIndex = 0;
@@ -49,7 +48,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: homeAppBar(_tabController, _navBarCurrentIndex),
+      appBar: AppBar(
+        title: Text(APP_NAME),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              _addAccount(context);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {
+              _listAccounts(context);
+            },
+          ),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                _logout(context);
+              })
+        ],
+        bottom: _navBarCurrentIndex == 1 ? TabBar(
+          controller: _tabController,
+          tabs: homeTabs,
+        ) : null,
+      ),
       body: _children[_navBarCurrentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
@@ -62,5 +86,25 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         onTap: _selectPage,
       ),
     );
+  }
+
+  void _logout(BuildContext context) {
+    accountsRepository.logout().then((_) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        SplashScreenPage.routeName,
+        (_) => false,
+      );
+    });
+  }
+
+  void _listAccounts(BuildContext context) {
+    accountsRepository.getCurrentAccount().then((account) {
+      Navigator.pushNamed(context, AccountSelectionPage.routeName);
+    });
+  }
+
+  void _addAccount(BuildContext context) {
+    AddAccountDialog.show(context);
   }
 }

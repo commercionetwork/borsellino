@@ -7,6 +7,7 @@ class ChainInfo {
   final String id;
   final String iconUrl;
   final String name;
+  final String lcdUrl;
   final String rpcUrl;
 
   // Bech32 Human Readable part used to create the addresses
@@ -16,10 +17,12 @@ class ChainInfo {
     @required this.id,
     @required this.iconUrl,
     @required this.name,
+    @required this.lcdUrl,
     @required this.rpcUrl,
     @required this.bech32Hrp,
   })  : assert(id != null),
         assert(name != null),
+        assert(lcdUrl != null),
         assert(rpcUrl != null),
         assert(bech32Hrp != null);
 }

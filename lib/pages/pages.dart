@@ -1,4 +1,4 @@
-export 'account_generation/account_generation_page.dart';
+export 'select_account/select_account.dart';
 export 'add_account/add_account_page.dart';
 export 'chain_selection/chain_selection_page.dart';
 export 'validators/validators_page.dart';

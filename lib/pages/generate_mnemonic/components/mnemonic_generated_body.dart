@@ -25,7 +25,7 @@ class MnemonicGeneratedBody extends StatelessWidget {
       Navigator.pushNamed(
         context,
         ChainSelectionPage.routeName,
-        arguments: ChainSelectionArguments(mnemonic),
+        arguments: ChainSelectionArguments(mnemonic: mnemonic),
       );
     }
   }

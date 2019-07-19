@@ -28,7 +28,7 @@ class ValidatorsBloc extends Bloc<ValidatorsEvent, ValidatorsState> {
         // Notify we got the list
         yield ValidatorsLoadedState(validators: validators);
       } catch (exception) {
-        print(exception);
+        print("Error while loading the validators: $exception");
 
         // Notify an error has occurred
         yield ValidatorsErrorState();

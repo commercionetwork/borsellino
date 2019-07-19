@@ -1,4 +1,4 @@
-export 'account_generation/bloc.dart';
+export 'account_selection/bloc.dart';
 export 'chain_selection/bloc.dart';
 export 'generate_mnemonic/bloc.dart';
 export 'import_mnemonic/bloc.dart';

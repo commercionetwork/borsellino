@@ -6,4 +6,5 @@ abstract class ChainSelectionEvent extends Equatable {
   ChainSelectionEvent([List props = const []]) : super(props);
 }
 
+/// Event that is emitted when the chains needs to be loaded.
 class LoadChainsEvent extends ChainSelectionEvent {}

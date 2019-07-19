@@ -14,6 +14,12 @@ class AccountsRepository {
     return await accountsSource.createAndStoreAccount(mnemonic, chain);
   }
 
+  /// Creates a new Account starting from the given [account]. The new one
+  /// will be used in order to interact with the given [chain].
+  Future<Account> convertAccount(Account account, ChainInfo chain) async {
+    return await accountsSource.convertAndStoreAccount(account, chain);
+  }
+
   /// Saves the given [account] as the current account
   /// and returns its details once done.
   Future<Account> setAccountAsCurrent(Account account) async {
@@ -29,5 +35,10 @@ class AccountsRepository {
   /// Returns the current account, or null if no current account is set.
   Future<Account> getCurrentAccount() async {
     return await accountsSource.getCurrentAccount();
+  }
+
+  /// Allows to logout setting the current account as null.
+  Future<void> logout() async {
+    return await accountsSource.logout();
   }
 }

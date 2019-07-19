@@ -13,7 +13,7 @@ class SourcesModule implements Module {
             converter: ChainInfoConverter(),
           ))
       ..bindLazySingleton((injector, p) => ValidatorSource(
-            endpoints: injector.get(),
+            accountsSource: injector.get(),
             httpClient: injector.get(),
             converter: ValidatorConverter(),
           ))
