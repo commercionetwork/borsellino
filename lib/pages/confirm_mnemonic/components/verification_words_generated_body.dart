@@ -96,14 +96,10 @@ class _VerificationWordsGeneratedBodyState
   }
 
   void _continue() {
-    final chainSelectionArgs = ChainSelectionArguments(
-      mnemonic: widget.mnemonic,
-    );
-
-    // Navigate to a new page
+    // Navigate to the chain selection page
     Navigator.of(context).pushNamed(
       ChainSelectionPage.routeName,
-      arguments: chainSelectionArgs,
+      arguments: ChainSelectionArguments(widget.mnemonic),
     );
   }
 

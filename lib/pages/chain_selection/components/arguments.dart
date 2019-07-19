@@ -3,5 +3,5 @@
 class ChainSelectionArguments {
   final List<String> mnemonic;
 
-  ChainSelectionArguments({this.mnemonic});
+  ChainSelectionArguments(this.mnemonic) : assert(mnemonic != null);
 }

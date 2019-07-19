@@ -1,6 +1,5 @@
 import 'package:borsellino/source/apis/apis.dart';
 import 'package:dependencies/dependencies.dart';
-import 'package:http/http.dart' as http;
 
 /// Implementation of Module that allows to provide all the dependencies
 /// needed when working with REST APIs
@@ -8,7 +7,6 @@ class ApisModule implements Module {
   @override
   void configure(Binder binder) {
     binder
-      ..bindLazySingleton((i, p) => http.Client())
       ..bindLazySingleton((i, p) => buildApisEndpoints());
   }
 

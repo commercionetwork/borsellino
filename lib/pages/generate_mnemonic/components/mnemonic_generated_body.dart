@@ -1,4 +1,5 @@
 import 'package:borsellino/pages/pages.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'word_item.dart';
@@ -13,11 +14,20 @@ class MnemonicGeneratedBody extends StatelessWidget {
   /// Allows to navigate to the page where the user is asked some random
   /// mnemonic words to make sure he has written them down
   void _goToMnemonicVerificationPage(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      ConfirmMnemonicPage.routeName,
-      arguments: VerifyMnemonicArguments(mnemonic),
-    );
+    if (kReleaseMode) {
+      Navigator.pushNamed(
+        context,
+        ConfirmMnemonicPage.routeName,
+        arguments: VerifyMnemonicArguments(mnemonic),
+      );
+    } else {
+      // If in debug, skip the mnemonic confirmation
+      Navigator.pushNamed(
+        context,
+        ChainSelectionPage.routeName,
+        arguments: ChainSelectionArguments(mnemonic),
+      );
+    }
   }
 
   @override

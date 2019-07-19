@@ -1,11 +1,13 @@
 import 'package:borsellino/dependency_injection/apis_module.dart';
 import 'package:borsellino/dependency_injection/repositories_module.dart';
 import 'package:borsellino/dependency_injection/sources_module.dart';
+import 'package:borsellino/dependency_injection/utils_module.dart';
 import 'package:dependencies/dependencies.dart';
 
 class BorsellinoInjector {
   static final _injector = Injector.fromModules(modules: [
     ApisModule(),
+    UtilsModule(),
     SourcesModule(),
     RepositoryModule(),
   ]);

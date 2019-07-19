@@ -52,8 +52,7 @@ class ChainsSource {
   /// Throws exception if no chain is found.
   Future<ChainInfo> getChainById(String chainId) async {
     final chains = await getChains();
-    final chainsData =
-        chains.takeWhile((chain) => chain.id == chainId).take(1).toList();
+    final chainsData = chains.where((chain) => chain.id == chainId).toList();
 
     if (chainsData.isEmpty) {
       throw Exception("Chain with id $chainId not supported");

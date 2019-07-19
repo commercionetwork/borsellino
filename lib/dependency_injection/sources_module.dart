@@ -1,3 +1,4 @@
+import 'package:borsellino/source/accounts/account_helper.dart';
 import 'package:borsellino/source/chains/chain_info_converter.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/validators/validator_converter.dart';
@@ -15,6 +16,11 @@ class SourcesModule implements Module {
             endpoints: injector.get(),
             httpClient: injector.get(),
             converter: ValidatorConverter(),
+          ))
+      ..bindLazySingleton((injector, p) => AccountsSource(
+            chainsSource: injector.get(),
+            secureStorage: injector.get(),
+            accountHelper: AccountHelper(),
           ))
       ..bindLazySingleton((injector, p) => MnemonicSource());
   }

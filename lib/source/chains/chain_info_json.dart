@@ -19,7 +19,6 @@ class ChainInfoJson {
         assert(bech32Hrp != null);
 
   factory ChainInfoJson.fromJson(Map<String, dynamic> json) {
-    print("Converting chain JSON: $json");
     return ChainInfoJson(
       id: json["id"],
       iconUrl: json["icon"],
