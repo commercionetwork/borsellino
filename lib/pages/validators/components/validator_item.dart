@@ -26,7 +26,10 @@ class ValidatorItem extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                ValidatorIcon(_validator),
+                ValidatorIcon(
+                  key: ValueKey(_validator.identity),
+                  validator: _validator,
+                ),
                 const SizedBox(width: 8),
                 ValidatorInfo(_validator),
               ],

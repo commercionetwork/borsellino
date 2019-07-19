@@ -1,8 +1,10 @@
+import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_app_bar.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
+import 'package:borsellino/pages/pages.dart';
+import 'package:borsellino/repository/repositories.dart';
 import 'package:flutter/material.dart';
-
 
 /// Represents the home page of the application
 class HomePage extends StatefulWidget {
@@ -12,8 +14,9 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  final AccountsRepository accountsRepository = BorsellinoInjector.get();
   TabController _tabController;
 
   @override
@@ -31,7 +34,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: homeAppBar(_tabController),
+      appBar: homeAppBar(
+        controller: _tabController,
+        onPressed: () {
+          accountsRepository.logout().then((_) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              SplashScreenPage.routeName,
+              (_) => false,
+            );
+          });
+        },
+      ),
       body: homeBody(_tabController),
     );
   }

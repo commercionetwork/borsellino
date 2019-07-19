@@ -16,4 +16,8 @@ class ValidatorsRepository {
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
     return await validatorsSource.getValidators(filter);
   }
+
+  Future<String> getValidatorImageUrl(Validator validator) async {
+    return await validatorsSource.getValidatorImageUrl(validator);
+  }
 }

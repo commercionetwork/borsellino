@@ -16,9 +16,12 @@ class ValidatorInfo extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Text(
-                StringUtils.capitalize(_validator.name),
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  StringUtils.capitalize(_validator.name),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

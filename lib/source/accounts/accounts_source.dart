@@ -134,4 +134,11 @@ class AccountsSource {
       return validAccounts[0];
     }
   }
+
+  /// Allows to logout setting the current account as null.
+  Future<void> logout() async {
+    // Set the current account as null
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_currentAccountKey, null);
+  }
 }

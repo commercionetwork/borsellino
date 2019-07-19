@@ -30,4 +30,9 @@ class AccountsRepository {
   Future<Account> getCurrentAccount() async {
     return await accountsSource.getCurrentAccount();
   }
+
+  /// Allows to logout setting the current account as null.
+  Future<void> logout() async {
+    return await accountsSource.logout();
+  }
 }
