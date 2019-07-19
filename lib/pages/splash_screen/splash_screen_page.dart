@@ -1,4 +1,3 @@
-import 'package:borsellino/blocprov/blocproviders.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/repository/repositories.dart';
