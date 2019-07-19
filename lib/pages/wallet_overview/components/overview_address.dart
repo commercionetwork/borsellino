@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-Container overviewAddress() {
+Container overviewAddress(BuildContext context) {
   return Container(
     decoration: BoxDecoration(
       border: Border.all(),
@@ -19,7 +19,7 @@ Container overviewAddress() {
                 )),
             IconButton(
               icon: Icon(Icons.share),
-              color: Colors.green,
+              color: Theme.of(context).primaryColor,
               onPressed: () {},
             ),
           ],

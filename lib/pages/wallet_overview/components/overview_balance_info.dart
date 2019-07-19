@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Container overviewBalanceInfo(){
+Container overviewBalanceInfo(BuildContext context){
   return Container(
       decoration: BoxDecoration(
         border: Border.all(),
@@ -15,7 +15,7 @@ Container overviewBalanceInfo(){
                 child: Text(
                   'CoinName',
                   style: TextStyle(
-                      color: Colors.green,
+                      color: Theme.of(context).primaryColor,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),

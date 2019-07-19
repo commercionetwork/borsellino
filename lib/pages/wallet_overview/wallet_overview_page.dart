@@ -7,7 +7,7 @@ class WalletOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: walletOverviewAppBar(),
-      body: walletOverviewBody(),
+      body: walletOverviewBody(context),
     );
   }
 }
