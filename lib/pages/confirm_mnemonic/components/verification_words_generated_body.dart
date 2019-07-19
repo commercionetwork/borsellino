@@ -1,4 +1,5 @@
-import 'package:borsellino/bloc/verify_mnemonic/verify_mnemonic_bloc.dart';
+import 'package:borsellino/bloc/blocs.dart';
+import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,17 +8,22 @@ typedef void VerificationCallBack(
   Map<int, String> insertedWords,
 );
 
+enum VerificationStatus { UNKNOWN, VALID, INVALID }
+
+/// Represents the body that is shown to the user when a list
+/// of verification words has been generated and should be properly
+/// inserted from the user.
 class VerificationWordsGeneratedBody extends StatefulWidget {
   final List<String> mnemonic;
   final Map<int, String> verificationWords;
   final VerificationCallBack callBack;
-  final bool areWordsInvalid;
+  final VerificationStatus verificationStatus;
 
   VerificationWordsGeneratedBody({
     @required this.mnemonic,
     @required this.verificationWords,
     @required this.callBack,
-    @required this.areWordsInvalid,
+    @required this.verificationStatus,
   });
 
   @override
@@ -40,7 +46,7 @@ class _VerificationWordsGeneratedBodyState
 
   @override
   Widget build(BuildContext context) {
-    final VerifyMnemonicBloc bloc = BlocProvider.of(context);
+    final ConfirmMnemonicBloc bloc = BlocProvider.of(context);
 
     return SingleChildScrollView(
       child: BlocBuilder(
@@ -52,15 +58,26 @@ class _VerificationWordsGeneratedBodyState
             children: <Widget>[
               ..._buildWordsInputs(),
               SizedBox(height: 16),
-              if (widget.areWordsInvalid)
+              if (widget.verificationStatus == VerificationStatus.INVALID)
                 Text(
                   "Invalid words",
                   style: TextStyle(color: Colors.red),
                 ),
-              RaisedButton(
-                child: Text("Verify"),
-                onPressed: _verifyWords,
-              ),
+              if (widget.verificationStatus == VerificationStatus.VALID)
+                Text(
+                  "Mnemonic correct!",
+                  style: TextStyle(color: Colors.green),
+                ),
+              if (widget.verificationStatus != VerificationStatus.VALID)
+                RaisedButton(
+                  child: Text("Verify"),
+                  onPressed: _verifyWords,
+                ),
+              if (widget.verificationStatus == VerificationStatus.VALID)
+                RaisedButton(
+                  child: Text("Continue"),
+                  onPressed: _continue,
+                )
             ],
           );
         },
@@ -75,6 +92,18 @@ class _VerificationWordsGeneratedBodyState
       _textControllers.map((index, controller) {
         return MapEntry(index, controller.text);
       }),
+    );
+  }
+
+  void _continue() {
+    final chainSelectionArgs = ChainSelectionArguments(
+      mnemonic: widget.mnemonic,
+    );
+
+    // Navigate to a new page
+    Navigator.of(context).pushNamed(
+      ChainSelectionPage.routeName,
+      arguments: chainSelectionArgs,
     );
   }
 

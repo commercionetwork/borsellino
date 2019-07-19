@@ -1,19 +1,20 @@
 import 'package:borsellino/bloc/blocs.dart';
-import 'package:borsellino/bloc/verify_mnemonic/verify_mnemonic_event.dart';
-import 'package:borsellino/bloc/verify_mnemonic/verify_mnemonic_state.dart';
-import 'package:borsellino/pages/verify_mnemonic/components/retrieving_words_body.dart';
-import 'package:borsellino/pages/verify_mnemonic/components/verification_words_generated_body.dart';
+import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'arguments.dart';
+import 'components/retrieving_words_body.dart';
+import 'components/verification_words_generated_body.dart';
 
-class VerifyMnemonicPage extends StatelessWidget {
+export 'arguments.dart';
+
+class ConfirmMnemonicPage extends StatelessWidget {
   static const routeName = "/verifyMnemonic";
 
   @override
   Widget build(BuildContext context) {
-    final VerifyMnemonicBloc bloc = BlocProvider.of(context);
+    final ConfirmMnemonicBloc bloc = BlocProvider.of(context);
 
     // Get the arguments
     final VerifyMnemonicArguments args =
@@ -27,8 +28,8 @@ class VerifyMnemonicPage extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: BlocBuilder(
             bloc: bloc,
-            builder: (context, VerifyMnemonicState state) {
-              if (state is InitialVerifyMnemonicState) {
+            builder: (context, ConfirmMnemonicState state) {
+              if (state is InitialMnemonicConfirmationState) {
                 bloc.dispatch(GetRandomVerificationWordsEvent(args.mnemonic));
               }
 
@@ -37,14 +38,19 @@ class VerifyMnemonicPage extends StatelessWidget {
               }
 
               if (state is VerificationWordsGeneratedState) {
+
+                // Get the current verification status
+                var verificationStatus = VerificationStatus.UNKNOWN;
                 if (state is VerificationWordsValidState) {
-                  print("Valid words!");
+                  verificationStatus = VerificationStatus.VALID;
+                } else if (state is VerificationWordsInvalidState) {
+                  verificationStatus = VerificationStatus.INVALID;
                 }
 
                 return VerificationWordsGeneratedBody(
                     mnemonic: args.mnemonic,
                     verificationWords: state.words,
-                    areWordsInvalid: state is VerificationWordsInvalidState,
+                    verificationStatus: verificationStatus,
                     callBack: (oldWords, insertedWords) {
                       // Dispatch the event to verify the words
                       bloc.dispatch(VerifyInsertedWordsEvent(

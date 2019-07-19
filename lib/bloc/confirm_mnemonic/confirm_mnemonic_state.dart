@@ -2,15 +2,15 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-abstract class VerifyMnemonicState extends Equatable {
-  VerifyMnemonicState([List props = const []]) : super(props);
+abstract class ConfirmMnemonicState extends Equatable {
+  ConfirmMnemonicState([List props = const []]) : super(props);
 }
 
-class InitialVerifyMnemonicState extends VerifyMnemonicState {}
+class InitialMnemonicConfirmationState extends ConfirmMnemonicState {}
 
-class GeneratingVerificationWordsState extends VerifyMnemonicState {}
+class GeneratingVerificationWordsState extends ConfirmMnemonicState {}
 
-class VerificationWordsGeneratedState extends VerifyMnemonicState {
+class VerificationWordsGeneratedState extends ConfirmMnemonicState {
   final Map<int, String> words;
 
   VerificationWordsGeneratedState(this.words) : super([words]);

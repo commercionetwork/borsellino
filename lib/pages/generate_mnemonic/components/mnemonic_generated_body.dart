@@ -1,5 +1,4 @@
 import 'package:borsellino/pages/pages.dart';
-import 'package:borsellino/pages/verify_mnemonic/arguments.dart';
 import 'package:flutter/material.dart';
 
 import 'word_item.dart';
@@ -16,7 +15,7 @@ class MnemonicGeneratedBody extends StatelessWidget {
   void _goToMnemonicVerificationPage(BuildContext context) {
     Navigator.pushNamed(
       context,
-      VerifyMnemonicPage.routeName,
+      ConfirmMnemonicPage.routeName,
       arguments: VerifyMnemonicArguments(mnemonic),
     );
   }

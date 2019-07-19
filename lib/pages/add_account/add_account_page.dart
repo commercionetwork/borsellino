@@ -19,8 +19,8 @@ class AddAccountPage extends StatelessWidget {
         children: <Widget>[
           Positioned.fill(
             child: Image(
-              image: NetworkImage("https://i.redd.it/ravmjkbpojg21.jpg"),
-              fit: BoxFit.fill,
+              image: NetworkImage("https://coincodex.com/en/resources/images//admin/news/atom-token-transfers/cosmos-stars.jpg:resizeboxcropjpg?1580x888"),
+              fit: BoxFit.cover,
             ),
           ),
           Column(
@@ -28,15 +28,13 @@ class AddAccountPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              MaterialButton(
-                color: Colors.white,
+              RaisedButton(
                 child: Text("Import mnemonic"),
                 onPressed: () {
                   Navigator.pushNamed(context, ImportMnemonicPage.routeName);
                 },
               ),
-              MaterialButton(
-                color: Colors.white,
+              RaisedButton(
                 child: Text("Generate new mnemonic"),
                 onPressed: () {
                   Navigator.pushNamed(context, GenerateMnemonicPage.routeName);

@@ -6,7 +6,7 @@ import 'package:borsellino/source/mnemonic/mnemonic_source.dart';
 class MnemonicRepository {
   final MnemonicSource mnemonicSource;
 
-  MnemonicRepository({this.mnemonicSource});
+  MnemonicRepository(this.mnemonicSource);
 
   Future<List<String>> generateRandomMnemonic() async {
     return await mnemonicSource.generateRandomMnemonic();
@@ -38,7 +38,6 @@ class MnemonicRepository {
     Map<int, String> originalWords,
     Map<int, String> insertedWords,
   ) async {
-
     var allValid = true;
     originalWords.forEach((index, word) {
       allValid &= originalWords[index].trim() == insertedWords[index].trim();

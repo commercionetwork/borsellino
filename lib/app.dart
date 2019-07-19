@@ -13,10 +13,12 @@ class BorsellinoApp extends StatelessWidget {
       theme: borsellinoTheme(),
       initialRoute: "/",
       routes: {
+        // TODO: Change this with a splash screen
         "/": (context) => AddAccountPage(),
         ImportMnemonicPage.routeName: (context) => importMnemonicBlocProvider(),
         GenerateMnemonicPage.routeName: (context) => generateMnemonicBlocProvider(),
-        VerifyMnemonicPage.routeName: (context) => verifyMnemonicBlocProvider(),
+        ConfirmMnemonicPage.routeName: (context) => confirmMnemonicBlocProvider(),
+        ChainSelectionPage.routeName: (context) => selectChainBlocProvider(),
       },
     );
   }

@@ -8,9 +8,9 @@ import 'package:meta/meta.dart';
 class ValidatorsRepository {
   final ValidatorSource validatorsSource;
 
-  ValidatorsRepository({
-    @required this.validatorsSource,
-  }) : assert(validatorsSource != null);
+  ValidatorsRepository(
+    this.validatorsSource,
+  ) : assert(validatorsSource != null);
 
   /// Allows to retrieve the list of all validators satisfying the given filter.
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
