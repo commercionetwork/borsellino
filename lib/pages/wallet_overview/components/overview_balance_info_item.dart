@@ -1,7 +1,19 @@
+import 'package:borsellino/models/models.dart';
+import 'package:borsellino/pages/wallet_overview/components/overview_total_widget.dart';
 import 'package:flutter/material.dart';
 
-Container overviewBalanceInfo(BuildContext context) {
-  return Container(
+/// Contains all the data related to the wallet amounts such as delegated,
+/// available, etc.
+class WalletOverviewWidget extends StatelessWidget {
+  final Wallet wallet;
+
+  WalletOverviewWidget(this.wallet);
+
+  @override
+  Widget build(BuildContext context) {
+    const spacer = SizedBox(height: 5);
+
+    return Container(
       decoration: BoxDecoration(
         border: Border.all(),
         borderRadius: BorderRadius.circular(3),
@@ -9,138 +21,17 @@ Container overviewBalanceInfo(BuildContext context) {
       padding: EdgeInsets.all(6),
       child: Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 5),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'CoinName',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Align(
-            child: Container(
-              padding: EdgeInsets.only(bottom: 5),
-              child: Text(
-                '0.0000000',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            alignment: Alignment.center,
-          ),
-          Align(
-            child: Text('\$ 0.00'),
-            alignment: Alignment.center,
-          ),
-          Divider(
-            color: Colors.black,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  child: Text(
-                    'Available',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.bold,  fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Align(
-            child: Text('0.000'),
-            alignment: Alignment.center,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Delegated',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Align(
-            child: Text('0.000'),
-            alignment: Alignment.center,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Unbonding',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Align(
-            child: Text('0.000'),
-            alignment: Alignment.center,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Reward',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Align(
-            child: Text('0.000'),
-            alignment: Alignment.center,
-          ),
+          WalletTotalWidget(wallet: wallet),
+          Divider(color: Colors.black),
+//          WalletBalanceItem(title: "Available", amount: 0),
+//          spacer,
+//          WalletBalanceItem(title: "Delegated", amount: 0),
+//          spacer,
+//          WalletBalanceItem(title: "Unbonding", amount: 0),
+//          spacer,
+//          WalletBalanceItem(title: "Reward", amount: 0),
         ],
-      ));
+      ),
+    );
+  }
 }

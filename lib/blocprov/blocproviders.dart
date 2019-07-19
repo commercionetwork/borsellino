@@ -1,5 +1,7 @@
 import 'package:borsellino/bloc/blocs.dart';
+import 'package:borsellino/bloc/wallet_overview/wallet_overview_bloc.dart';
 import 'package:borsellino/pages/pages.dart';
+import 'package:borsellino/pages/wallet_overview/wallet_overview_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:borsellino/models/models.dart';
 
@@ -43,5 +45,12 @@ BlocProvider accountSelectionBlocProvider() {
   return BlocProvider<AccountSelectionBloc>(
     builder: (context) => AccountSelectionBloc(),
     child: AccountSelectionPage(),
+  );
+}
+
+BlocProvider walletOverviewWalletProvider() {
+  return BlocProvider<WalletOverviewBloc>(
+    builder: (context) => WalletOverviewBloc(),
+    child: WalletOverviewPage(),
   );
 }

@@ -1,3 +1,4 @@
+import 'package:borsellino/blocprov/blocproviders.dart';
 import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     _tabController = TabController(vsync: this, length: homeTabs.length);
     _children = [
-      WalletOverviewPage(),
+      walletOverviewWalletProvider(),
       homeBody(_tabController)
     ];
   }

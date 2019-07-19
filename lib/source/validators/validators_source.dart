@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:borsellino/source/sources.dart';
+import 'package:borsellino/source/utils.dart';
 import 'package:borsellino/source/validators/validator_converter.dart';
 import 'package:borsellino/source/validators/validator_json.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,13 +37,6 @@ class ValidatorSource {
     return account.chain;
   }
 
-  void _checkResponse(http.Response response) {
-    if (response.statusCode != 200) {
-      throw Exception(
-          "Excpected status code 200 but got ${response.statusCode}");
-    }
-  }
-
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
     // Get the chain info
     final chain = await _getChainInfo();
@@ -71,7 +64,7 @@ class ValidatorSource {
 
   List<Validator> _checkValidatorsResponse(http.Response response) {
     // Check the response
-    _checkResponse(response);
+    checkResponse(response);
 
     // If the server returns OK, parse the JSON
     final validatorsList = json.decode(response.body) as List;
@@ -95,7 +88,7 @@ class ValidatorSource {
 
     // Get the details of the validator
     final response = await httpClient.get(detailsApi);
-    _checkResponse(response);
+    checkResponse(response);
 
     // Extract the identity data
     final validatorInfo = json.decode(response.body) as Map<String, dynamic>;
@@ -110,7 +103,7 @@ class ValidatorSource {
     final keyApi =
         "https://keybase.io/_/api/1.0/key/fetch.json?pgp_key_ids=$identity";
     final keyBaseResponse = await httpClient.get(keyApi);
-    _checkResponse(keyBaseResponse);
+    checkResponse(keyBaseResponse);
 
     // Get the key fingerprint
     final keysData = json.decode(keyBaseResponse.body) as Map<String, dynamic>;
@@ -121,7 +114,7 @@ class ValidatorSource {
     final iconApi =
         "https://keybase.io/_/api/1.0/user/lookup.json?key_fingerprint=$keyFingerprint&fields=pictures";
     final iconResponse = await httpClient.get(iconApi);
-    _checkResponse(iconResponse);
+    checkResponse(iconResponse);
 
     // Parse the data
     final data = json.decode(iconResponse.body) as Map<String, dynamic>;
