@@ -1,5 +1,6 @@
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/pages/wallet_overview/components/sharing_dialog_item.dart';
+import 'package:borsellino/pages/wallet_overview/components/share_account_dialog.dart';
+import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
 
 class WalletAddressWidget extends StatelessWidget {
@@ -9,65 +10,53 @@ class WalletAddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'My Address',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    )),
+    final titleTextStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: FontSize.LARGE,
+      color: Theme.of(context).primaryColorDark,
+    );
+
+    final subTitleTextStyle = TextStyle(
+      color: Theme.of(context).primaryColor,
+      fontSize: FontSize.MEDIUM,
+    );
+
+    final valueTextStyle = TextStyle(
+      fontSize: FontSize.SMALL,
+    );
+
+    const largeSeparator = SizedBox(height: 16);
+    const smallSeparator = SizedBox(height: 8);
+
+    return Card(
+      color: Theme.of(context).primaryColorLight,
+      elevation: 7,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: <Widget>[
+            Text("My wallet", style: titleTextStyle),
+            largeSeparator,
+            Text("Chain:", style: subTitleTextStyle),
+            Text(wallet.account.chain.name, style: valueTextStyle),
+            smallSeparator,
+            Text("Address:", style: subTitleTextStyle),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(wallet.account.address, style: valueTextStyle),
+            ),
+            largeSeparator,
+            IconButton(
+              alignment: Alignment.centerRight,
+              icon: Icon(
+                Icons.share,
+                size: 30,
               ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: IconButton(
-                    alignment: Alignment.centerRight,
-                    icon: Icon(
-                      Icons.share,
-                      size: 30,
-                    ),
-                    color: Theme.of(context).primaryColor,
-                    onPressed: () => SharingDialog.show(context, wallet),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    wallet.account.address,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ],
+              color: Theme.of(context).primaryColor,
+              onPressed: () => SharingDialog.show(context, wallet),
+            ),
+          ],
+        ),
       ),
     );
   }

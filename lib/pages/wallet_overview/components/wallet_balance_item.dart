@@ -1,3 +1,4 @@
+import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
 
 /// Represents a single entry inside the wallet balance.
@@ -14,10 +15,14 @@ class WalletBalanceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-      color: Theme.of(context).accentColor,
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
+
+    final titleTextStyle = TextStyle(
+      color: Theme.of(context).primaryColor,
+      fontSize: FontSize.MEDIUM,
+    );
+
+    final valueTextStyle = TextStyle(
+          fontSize: FontSize.SMALL,
     );
 
     return Container(
@@ -25,9 +30,8 @@ class WalletBalanceItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(title, style: textStyle),
-          SizedBox(height: 5),
-          Text(amount.toStringAsFixed(6)),
+          Text(title, style: titleTextStyle),
+          Text(amount.toStringAsFixed(6), style: valueTextStyle),
         ],
       ),
     );

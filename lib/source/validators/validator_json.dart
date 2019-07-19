@@ -1,3 +1,4 @@
+import 'package:borsellino/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
@@ -27,7 +28,7 @@ class ValidatorJson {
       status: json["status"],
       name: json["description"]["moniker"],
       address: json["operator_address"],
-      tokens: double.parse(json["tokens"]) * 0.0000001,
+      tokens: double.parse(json["tokens"]) * TOKEN_MULTIPLICATION_FACTOR,
       identity: json["description"]["identity"],
       website: json["description"]["website"],
       commissionRate: double.parse(json["commission"]["rate"]),

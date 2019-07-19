@@ -41,6 +41,12 @@ dependencies:
   # String formatting
   sprintf: ^4.0.2
 
+  # UI
+  auto_size_text: ^2.0.2+1
+
+  # Sharing data
+  share: ^0.6.2
+
 
 #############
 # Development only dependencies

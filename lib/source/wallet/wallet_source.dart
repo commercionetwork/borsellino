@@ -6,6 +6,7 @@ import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/utils.dart';
 import 'package:borsellino/source/wallet/models/account_data.dart';
 import 'package:borsellino/source/wallet/wallet_endpoints.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:sprintf/sprintf.dart';
@@ -23,6 +24,8 @@ class WalletSource {
 
   /// Reads the account endpoint and retrieves data from it.
   Future<AccountData> _getAccountData(Account account) async {
+    print("Getting account data");
+
     // Build the wallet api url
     final endpoint = sprintf(WalletEndpoints.ACCOUNT, [account.address]);
 
@@ -38,9 +41,9 @@ class WalletSource {
     final value = json["value"] as Map<String, dynamic>;
 
     // Get the coins
-    final coins = ((value["coins"] as List) ?? List()).map((coinMap) {
-      return Coin(amount: coinMap["amount"], denom: coinMap["denom"]);
-    }).toList();
+    final coins = ((value["coins"] as List) ?? List())
+        .map((coinMap) => Coin.fromJson(coinMap))
+        .toList();
 
     return AccountData(
       accountNumber: value["account_number"],
@@ -51,6 +54,8 @@ class WalletSource {
 
   /// Retrieves the data of the delegations that an account has made
   Future<List<DelegationData>> _getDelegationsData(Account account) async {
+    print("Getting delegators data");
+
     // Get the endpoint
     final endpoint = sprintf(WalletEndpoints.DELEGATIONS, [account.address]);
 
@@ -75,6 +80,8 @@ class WalletSource {
   Future<List<UnbondingDelegation>> _getUnbondingDelegations(
     Account account,
   ) async {
+    print("Getting delegations data");
+
     // Get the endpoint
     final endpoint = sprintf(
       WalletEndpoints.UNBONDING_DELEGATIONS,
@@ -99,6 +106,8 @@ class WalletSource {
   }
 
   Future<List<Coin>> _getRewards(Account account) async {
+    print("Getting rewards data");
+
     // Get the endpoint
     final endpoint = sprintf(WalletEndpoints.REWARDS, [account.address]);
 
@@ -110,25 +119,30 @@ class WalletSource {
     checkResponse(response);
 
     // Parse the data
-    final json = (jsonDecode(response.body) as List) ?? List();
-    return json.map((object) {
-      return Coin(
-        denom: object["denom"],
-        amount: double.parse(object["amount"]),
-      );
-    }).toList();
+    final json = jsonDecode(response.body) as Map;
+    final rewards = (json["total"] as List) ?? List();
+
+    return rewards.map((object) => Coin.fromJson(object)).toList();
   }
 
   /// Allows to return the current wallet instance
   Future<Wallet> getCurrentWallet() async {
     // Get the current account
     final account = await accountsSource.getCurrentAccount();
+    print("Getting data for account with address ${account.address}");
 
     // Get all the data
     final accountData = await _getAccountData(account);
+    print("Account data: $accountData");
+
     final delegations = await _getDelegationsData(account);
+    print("Delegations: $delegations");
+
     final unbondingDelegations = await _getUnbondingDelegations(account);
+    print("Unbonding: $unbondingDelegations");
+
     final rewards = await _getRewards(account);
+    print("Rewards: $rewards");
 
     // Build the wallet
     return Wallet(

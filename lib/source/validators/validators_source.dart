@@ -68,7 +68,6 @@ class ValidatorSource {
 
     // If the server returns OK, parse the JSON
     final validatorsList = json.decode(response.body) as List;
-    print("Received validators $json");
 
     // Get the JSON objects
     final validatorJsons =

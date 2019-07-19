@@ -1,6 +1,7 @@
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/models/wallet/delegations.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 import 'coin.dart';
@@ -30,6 +31,13 @@ class Wallet {
         assert(delegatedCoins != null),
         assert(unbondingDelegations != null),
         assert(rewards != null);
+
+  double getTotal(Coin coin) {
+    return getAvailable(coin) +
+        getDelegated(coin) +
+        getUnbonding(coin) +
+        getRewards(coin);
+  }
 
   double getAvailable(Coin coin) {
     final availableCoin = availableCoins

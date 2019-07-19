@@ -1,9 +1,10 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:borsellino/models/models.dart';
+import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
 
-/// Contains the overall total of coins that the current wallet
-/// has associated.
+/// Contains the name and the total amount of the given [coin] that
+/// the given [wallet] has.
 class WalletTotalWidget extends StatelessWidget {
   final Wallet wallet;
   final Coin coin;
@@ -16,33 +17,24 @@ class WalletTotalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Get the whole amount
-    final availableCoin = wallet.availableCoins
-        .where((currentCoin) => currentCoin.denom == coin.denom)
-        .toList();
-
+    // Get the denom by falling back to the default one
     var denom = coin?.denom ?? wallet.account.chain.defaultTokenName;
 
-    var availableAmount = 0.0;
-    if (availableCoin.isNotEmpty) {
-      availableAmount = availableCoin[0].amount;
-    }
+    final titleTextStyle = TextStyle(
+      color: Theme.of(context).primaryColorDark,
+      fontSize: FontSize.LARGE,
+      fontWeight: FontWeight.bold,
+    );
+
+    final valueTextStyle = TextStyle(
+      fontSize: FontSize.MEDIUM,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Text(
-          StringUtils.capitalize(denom),
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          availableAmount.toStringAsFixed(6),
-          style: TextStyle(fontSize: 18),
-        ),
+        Text(StringUtils.capitalize(denom), style: titleTextStyle),
+        Text(wallet.getTotal(coin).toStringAsFixed(6), style: valueTextStyle),
       ],
     );
   }

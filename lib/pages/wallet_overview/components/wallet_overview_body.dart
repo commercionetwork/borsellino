@@ -20,22 +20,24 @@ class WalletOverviewBody extends StatelessWidget {
         children: <Widget>[
           WalletAddressWidget(wallet),
           SizedBox(height: 16),
-          _buildCoinData(wallet)
+          ..._buildCoinData(wallet)
         ],
       ),
     );
   }
 
-  Widget _buildCoinData(Wallet wallet) {
-
-    // TODO: Handle multiple coins
-    Coin coin;
+  List<Widget> _buildCoinData(Wallet wallet) {
+    List<Coin> coins = List();
     if (wallet.availableCoins.isNotEmpty) {
-      coin = wallet.availableCoins[0];
+      coins = wallet.availableCoins;
     } else if (wallet.rewards.isNotEmpty) {
-      coin = wallet.rewards[0];
+      coins = wallet.rewards;
+    } else {
+      coins = [Coin(denom: wallet.account.chain.defaultTokenName, amount: 0.0)];
     }
 
-    return WalletBalanceWidget(wallet: wallet, coin: coin);
+    return coins
+        .map((coin) => WalletBalanceWidget(wallet: wallet, coin: coin))
+        .toList();
   }
 }
