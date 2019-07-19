@@ -4,6 +4,7 @@ import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
 import 'package:borsellino/pages/pages.dart';
+import 'package:borsellino/pages/send_coins/send_coins_page.dart';
 import 'package:borsellino/repository/repositories.dart';
 import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:borsellino/pages/wallet_overview/wallet_overview_page.dart';
@@ -36,7 +37,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _tabController = TabController(vsync: this, length: homeTabs.length);
     _children = [
       walletOverviewWalletProvider(),
-      homeBody(_tabController)
+      homeBody(_tabController),
+      SendCoinsPage()
     ];
   }
 
@@ -82,7 +84,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         currentIndex: _navBarCurrentIndex,
         items: [
           navBarItem(Icon(Icons.account_box), 'ACCOUNT', context),
-          navBarItem(Icon(Icons.desktop_mac), 'VALIDATORS', context)
+          navBarItem(Icon(Icons.desktop_mac), 'VALIDATORS', context),
+          navBarItem(Icon(Icons.send), 'SEND', context)
         ],
         onTap: _selectPage,
       ),
