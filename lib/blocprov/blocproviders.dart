@@ -38,3 +38,10 @@ BlocProvider selectChainBlocProvider() {
     child: ChainSelectionPage(),
   );
 }
+
+BlocProvider accountSelectionBlocProvider() {
+  return BlocProvider<AccountSelectionBloc>(
+    builder: (context) => AccountSelectionBloc(),
+    child: AccountSelectionPage(),
+  );
+}

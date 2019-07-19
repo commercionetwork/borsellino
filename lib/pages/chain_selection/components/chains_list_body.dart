@@ -1,3 +1,4 @@
+import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,6 @@ class _ChainListBodyState extends State<ChainListBody> {
   }
 
   Widget _buildIcon(ChainInfo chain) {
-    return Image.network(
-        chain.iconUrl ?? "https://png.pngtree.com/svg/20160401/a381a1569c.png");
+    return Image.network(chain.iconUrl ?? DEFAULT_CHAIN_IMAGE_URL);
   }
 }

@@ -38,9 +38,15 @@ class _HomePageState extends State<HomePage>
         title: Text(APP_NAME),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              _addAccount(context);
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.list),
             onPressed: () {
-              _switchChain(context);
+              _listAccounts(context);
             },
           ),
           IconButton(
@@ -68,13 +74,13 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  void _switchChain(BuildContext context) {
+  void _listAccounts(BuildContext context) {
     accountsRepository.getCurrentAccount().then((account) {
-      Navigator.pushNamed(
-        context,
-        ChainSelectionPage.routeName,
-        arguments: ChainSelectionArguments(account: account),
-      );
+      Navigator.pushNamed(context, AccountSelectionPage.routeName);
     });
+  }
+
+  void _addAccount(BuildContext context) {
+    Navigator.pushNamed(context, AddAccountPage.routeName);
   }
 }

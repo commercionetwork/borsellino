@@ -21,6 +21,7 @@ class BorsellinoApp extends StatelessWidget {
         GenerateMnemonicPage.routeName: (context) => generateMnemonicBlocProvider(),
         ConfirmMnemonicPage.routeName: (context) => confirmMnemonicBlocProvider(),
         ChainSelectionPage.routeName: (context) => selectChainBlocProvider(),
+        AccountSelectionPage.routeName: (context) => accountSelectionBlocProvider(),
       },
     );
   }

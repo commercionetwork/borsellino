@@ -13,6 +13,7 @@ class ChainSelectionBloc
   @override
   ChainSelectionState get initialState => InitialChainSelectionState();
 
+  /// Used to generate an account.
   Future<void> generateAccount({
     List<String> mnemonic,
     Account account,
