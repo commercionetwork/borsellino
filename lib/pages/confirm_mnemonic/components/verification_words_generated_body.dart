@@ -99,7 +99,7 @@ class _VerificationWordsGeneratedBodyState
     // Navigate to the chain selection page
     Navigator.of(context).pushNamed(
       ChainSelectionPage.routeName,
-      arguments: ChainSelectionArguments(widget.mnemonic),
+      arguments: ChainSelectionArguments(mnemonic: widget.mnemonic),
     );
   }
 

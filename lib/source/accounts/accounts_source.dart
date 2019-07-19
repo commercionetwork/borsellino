@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,16 +28,14 @@ class AccountsSource {
         assert(secureStorage != null),
         assert(accountHelper != null);
 
-  /// Generates and stores an account associated to the
-  /// given [mnemonic] for the given [chain].
-  /// Returns the account one it has been stored.
-  Future<Account> createAndStoreAccount(
-    List<String> mnemonic,
+  /// Creates a new account based on the given [privateKey] bytes and for
+  /// the given [chain]. After creating it, it stores the private key into
+  /// the secure storage and the address and chain relation into the
+  /// preferences for later retrieval.
+  Future<Account> _createAndSaveAccount(
+    Uint8List privateKey,
     ChainInfo chain,
   ) async {
-    // Generate the private key
-    final privateKey = await accountHelper.generatePrivateKey(mnemonic);
-
     // Generate the account
     final account = await accountHelper.generateAccount(privateKey, chain);
 
@@ -49,8 +49,34 @@ class AccountsSource {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(account.address, chain.id);
 
-    // Return the created account
     return account;
+  }
+
+  /// Generates and stores an account associated to the
+  /// given [mnemonic] for the given [chain].
+  /// Returns the account one it has been stored.
+  Future<Account> createAndStoreAccount(
+    List<String> mnemonic,
+    ChainInfo chain,
+  ) async {
+    // Generate the private key
+    final privateKey = await accountHelper.generatePrivateKey(mnemonic);
+
+    // Create and save the account
+    return await _createAndSaveAccount(privateKey, chain);
+  }
+
+  /// Converts the given [account] into a new one made for the given [chain].
+  Future<Account> convertAndStoreAccount(
+    Account account,
+    ChainInfo chain,
+  ) async {
+    // Get the existing private key
+    final privateKey = await secureStorage.read(key: account.address);
+    final privateKeyBytes = HEX.decode(privateKey);
+
+    // Generate a new account and save it
+    return await _createAndSaveAccount(privateKeyBytes, chain);
   }
 
   /// Allows to set the given [account] as the currently used account.

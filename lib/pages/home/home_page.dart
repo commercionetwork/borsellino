@@ -1,5 +1,5 @@
+import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
-import 'package:borsellino/pages/home/components/home_app_bar.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
 import 'package:borsellino/pages/pages.dart';
@@ -34,19 +34,47 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: homeAppBar(
-        controller: _tabController,
-        onPressed: () {
-          accountsRepository.logout().then((_) {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              SplashScreenPage.routeName,
-              (_) => false,
-            );
-          });
-        },
+      appBar: AppBar(
+        title: Text(APP_NAME),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {
+              _switchChain(context);
+            },
+          ),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                _logout(context);
+              })
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: homeTabs,
+        ),
       ),
       body: homeBody(_tabController),
     );
+  }
+
+  void _logout(BuildContext context) {
+    accountsRepository.logout().then((_) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        SplashScreenPage.routeName,
+        (_) => false,
+      );
+    });
+  }
+
+  void _switchChain(BuildContext context) {
+    accountsRepository.getCurrentAccount().then((account) {
+      Navigator.pushNamed(
+        context,
+        ChainSelectionPage.routeName,
+        arguments: ChainSelectionArguments(account: account),
+      );
+    });
   }
 }

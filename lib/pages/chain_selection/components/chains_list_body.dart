@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 
 typedef void ChainSelectionCallback(ChainInfo chain);
 
-class ChainSelectionBody extends StatefulWidget {
+class ChainListBody extends StatefulWidget {
   final List<ChainInfo> chains;
   final ChainSelectionCallback callback;
 
-  ChainSelectionBody({
+  ChainListBody({
     @required this.chains,
     @required this.callback,
   })  : assert(chains != null),
         assert(callback != null);
 
   @override
-  _ChainSelectionBodyState createState() => _ChainSelectionBodyState();
+  _ChainListBodyState createState() => _ChainListBodyState();
 }
 
-class _ChainSelectionBodyState extends State<ChainSelectionBody> {
+class _ChainListBodyState extends State<ChainListBody> {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
