@@ -13,36 +13,65 @@ class AddAccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const titleTextStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 28,
+    );
+
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Positioned.fill(
-            child: Image(
-              image: NetworkImage("https://coincodex.com/en/resources/images//admin/news/atom-token-transfers/cosmos-stars.jpg:resizeboxcropjpg?1580x888"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                child: Text("Import mnemonic"),
-                onPressed: () {
-                  Navigator.pushNamed(context, ImportMnemonicPage.routeName);
-                },
+      body: Container(
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Positioned.fill(
+              child: Image(
+                image: NetworkImage(
+                    "https://csharpdotchristiannageldotcom.files.wordpress.com/2018/08/unicorn.jpg?w=1200"),
+                fit: BoxFit.cover,
               ),
-              RaisedButton(
-                child: Text("Generate new mnemonic"),
-                onPressed: () {
-                  Navigator.pushNamed(context, GenerateMnemonicPage.routeName);
-                },
-              )
-            ],
-          )
-        ],
+            ),
+            SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Borsellino", style: titleTextStyle),
+                    Text("The Cosmos Hub wallet!", style: titleTextStyle)
+                  ],
+                ),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text("Import mnemonic"),
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.pushNamed(context, ImportMnemonicPage.routeName);
+                      },
+                    ),
+                    SizedBox(width: 16),
+                    RaisedButton(
+                      child: Text("Generate new mnemonic"),
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, GenerateMnemonicPage.routeName);
+                      },
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

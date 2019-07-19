@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 /// Represents the home page of the application
 class HomePage extends StatefulWidget {
+  static const routeName = "/home";
+
   @override
   _HomePageState createState() => _HomePageState();
 }

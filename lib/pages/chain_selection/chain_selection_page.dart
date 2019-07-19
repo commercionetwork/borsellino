@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:borsellino/bloc/blocs.dart';
+import 'package:borsellino/models/chain/chain_info.dart';
+import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,21 +54,25 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
         child: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, ChainSelectionState state) {
+
+            // Initial state
             if (state is InitialChainSelectionState) {
               bloc.dispatch(LoadChainsEvent());
             }
 
+            // Loaded state
             if (state is LoadedChainsState) {
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
               return ChainSelectionBody(
                 chains: state.chains,
                 callback: (chain) {
-                  // TODO: Navigate to the account generation page
+                  _showAccountGenerationPage(args, chain, context);
                 },
               );
             }
 
+            // Error state
             if (state is ErrorChainsState) {
               return Container(
                 padding: EdgeInsets.all(16),
@@ -87,6 +93,21 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
           },
         ),
       ),
+    );
+  }
+
+  void _showAccountGenerationPage(
+    ChainSelectionArguments args,
+    ChainInfo chain,
+    BuildContext context,
+  ) {
+    final accountGenerationArguments =
+        AccountGenerationArgs(mnemonic: args.mnemonic, chainInfo: chain);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AccountGenerationPage.routeName,
+      (_) => false,
+      arguments: accountGenerationArguments,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:meta/meta.dart';
 import 'package:hex/hex.dart';
@@ -62,6 +63,7 @@ class AccountsSource {
   Future<List<Account>> listAccounts() async {
     // List all the private keys
     final privateKeys = await secureStorage.readAll();
+    print("Private keys: $privateKeys");
 
     // Get a reference to the SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -69,9 +71,14 @@ class AccountsSource {
     // Define the accounts
     final List<Account> accounts = List();
 
-    privateKeys.forEach((address, privateKey) async {
+    for (var i = 0; i < privateKeys.entries.length; i++) {
+      final entry = privateKeys.entries.elementAt(i);
+      final address = entry.key;
+      final privateKey = entry.value;
+
       // Get the chain id from the preferences
       final chain = prefs.getString(address);
+      print("Chain for $address: $chain");
 
       // Get the chain data from the source
       final chainData = await chainsSource.getChainById(chain);
@@ -85,9 +92,13 @@ class AccountsSource {
         chainData,
       );
 
+      print("Recovered account ${account.address} for chain $chain");
+
       // Add the generated account into the list
       accounts.add(account);
-    });
+    }
+
+    print(accounts);
 
     // Return the accounts list
     return accounts;
@@ -100,23 +111,27 @@ class AccountsSource {
     final accountAddress = prefs.getString(_currentAccountKey);
 
     if (accountAddress == null) {
+      print("No account set into the preferences");
       // No current account set, return null
       return null;
     }
+
+    print("Latest account: $accountAddress");
 
     // List the accounts
     final accounts = await listAccounts();
 
     // Search the one having the same address
-    final index =
-        accounts.indexWhere((account) => account.address == accountAddress);
+    final validAccounts =
+        accounts.where((account) => account.address == accountAddress).toList();
 
-    if (index == -1) {
-      // No account with same addres found
+    if (validAccounts.isEmpty) {
+      print("No matching account found");
+      // No account with same address found
       return null;
     } else {
       // Account found
-      return accounts[index];
+      return validAccounts[0];
     }
   }
 }

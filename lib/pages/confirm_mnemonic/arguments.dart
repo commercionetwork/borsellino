@@ -3,5 +3,5 @@
 class VerifyMnemonicArguments {
   final List<String> mnemonic;
 
-  VerifyMnemonicArguments(this.mnemonic);
+  VerifyMnemonicArguments(this.mnemonic) : assert(mnemonic != null);
 }
