@@ -7,6 +7,7 @@ class ChainInfoJson {
   final String lcdUrl;
   final String rpcUrl;
   final String bech32Hrp;
+  final String defaultTokenName;
 
   ChainInfoJson({
     @required this.id,
@@ -15,11 +16,13 @@ class ChainInfoJson {
     @required this.lcdUrl,
     @required this.rpcUrl,
     @required this.bech32Hrp,
+    @required this.defaultTokenName,
   })  : assert(id != null),
         assert(name != null),
         assert(lcdUrl != null),
         assert(rpcUrl != null),
-        assert(bech32Hrp != null);
+        assert(bech32Hrp != null),
+        assert(defaultTokenName != null);
 
   factory ChainInfoJson.fromJson(Map<String, dynamic> json) {
     return ChainInfoJson(
@@ -29,6 +32,7 @@ class ChainInfoJson {
       lcdUrl: json["lcd_url"],
       rpcUrl: json["rpc_url"],
       bech32Hrp: json["bech32_hrp"],
+      defaultTokenName: json["token"],
     );
   }
 }

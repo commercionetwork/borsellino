@@ -38,6 +38,9 @@ dependencies:
   # Shared preferences
   shared_preferences: ^0.5.3+4
 
+  # String formatting
+  sprintf: ^4.0.2
+
 
 #############
 # Development only dependencies
