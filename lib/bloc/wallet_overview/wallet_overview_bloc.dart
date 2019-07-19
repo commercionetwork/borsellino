@@ -22,6 +22,7 @@ class WalletOverviewBloc
       try {
         // Get the wallet
         final wallet = await walletRepository.getCurrentWallet();
+        print("Retrieved current wallet");
 
         // Tell that we loaded it
         yield WalletDataLoadedState(wallet);

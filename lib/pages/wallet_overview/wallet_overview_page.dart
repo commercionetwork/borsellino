@@ -32,38 +32,47 @@ class _WalletOverviewPageState extends State<WalletOverviewPage> {
           bloc.dispatch(LoadWalletDataEvent());
           return _refreshCompleter.future;
         },
-        child: BlocBuilder(
-          bloc: bloc,
-          builder: (BuildContext context, WalletOverviewState state) {
-            // Initial state
-            if (state is InitialWalletOverviewState) {
-              bloc.dispatch(LoadWalletDataEvent());
-            }
+        child: ListView(
+          children: <Widget>[
+            BlocBuilder(
+              bloc: bloc,
+              builder: (BuildContext context, WalletOverviewState state) {
+                // Initial state
+                if (state is InitialWalletOverviewState) {
+                  bloc.dispatch(LoadWalletDataEvent());
+                }
 
-            // Loading
-            if (state is WalletDataLoadedState) {
-              _refreshCompleter?.complete();
-              _refreshCompleter = Completer();
-              return WalletOverviewBody(state.wallet);
-            }
+                // Loading
+                if (state is WalletDataLoadedState) {
+                  _refreshCompleter?.complete();
+                  _refreshCompleter = Completer();
+                  return WalletOverviewBody(state.wallet);
+                }
 
-            // Error
-            if (state is WalletErrorState) {
-              return Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Error loading the wallet data."),
-                    Text(
-                        "Please try again later or contact and admin if this persist.")
-                  ],
-                ),
-              );
-            }
+                // Error
+                if (state is WalletErrorState) {
+                  return Container(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Error loading the wallet data."),
+                        Text(
+                            "Please try again later or contact and admin if this persist.")
+                      ],
+                    ),
+                  );
+                }
 
-            return Container();
-          },
+                return Container(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                    child: Text("Loading data..."),
+                  ),
+                );
+              },
+            )
+          ],
         ),
       ),
     );
