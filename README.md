@@ -1,6 +1,16 @@
 # Borsellino
-This project contains the Flutter version of Borsellino, the [Commercio.network](https://commercio.network)'s 
-official wallet.  
+Borsellino is the first multi-chain, easy-to-use and multiplatform Cosmos Hub wallet. 
+Entirely made with [Flutter](https://flutter.dev/), it fetches the data about the supported chains 
+from a remote source. This means that adding a new supported chain is no harder than submitting a PR to the proper 
+[GitHub repository](https://github.com/RiccardoM/CosmosHub-Chains) 😉.
+
+## Supported chains
+Currently supported chains are: 
+* [Bitsong.io Testnet](https://github.com/bitsongofficial/go-bitsong)
+* [Commercio.network Testnet](https://github.com/commercionetwork/commercionetwork)
+* [Cosmos Mainnet](https://github.com/cosmos/cosmos-sdk)
+* [Kava Testnet](https://github.com/Kava-Labs/kava)
+* [Regen.network Testnet](https://github.com/regen-network/regen-ledger)
 
 ## Developing
 Following you will find some tips on how to easily develop your custom version of Borsellino.
