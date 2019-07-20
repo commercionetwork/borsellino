@@ -2,8 +2,6 @@ import 'package:borsellino/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'msg_send.g.dart';
-
 @JsonSerializable()
 class MsgSend {
   @JsonKey(name: "from_address")
@@ -22,8 +20,9 @@ class MsgSend {
         assert(toAddress != null),
         assert(amount != null);
 
-  factory MsgSend.fromJson(Map<String, dynamic> json) =>
-      _$MsgSendFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MsgSendToJson(this);
+  Map<String, dynamic> toJson() => {
+        'from_address': this.fromAddress,
+        'to_address': this.toAddress,
+        'amount': this.amount.map((coin) => coin.toJson()).toList(),
+      };
 }

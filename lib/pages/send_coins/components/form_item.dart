@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 class FormItem extends StatelessWidget {
   final String fieldDescription;
   final String fieldLabel;
+  final String value;
   final TextInputType keyboardType;
   final ValueChanged<String> onChanged;
 
   FormItem({
     @required this.fieldDescription,
     @required this.fieldLabel,
+    @required this.value,
     @required this.keyboardType,
     @required this.onChanged,
   });
@@ -41,6 +43,7 @@ class FormItem extends StatelessWidget {
               }
               return null;
             },
+            initialValue: value,
           ),
         ],
       ),

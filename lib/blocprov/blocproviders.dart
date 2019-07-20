@@ -54,3 +54,10 @@ BlocProvider walletOverviewWalletProvider() {
     child: WalletOverviewPage(),
   );
 }
+
+BlocProvider sendCoinsBlocProvider() {
+  return BlocProvider<SendCoinsBloc>(
+    builder: (context) => SendCoinsBloc(),
+    child: SendCoinsPage(),
+  );
+}

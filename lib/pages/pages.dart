@@ -8,3 +8,4 @@ export 'import_mnemonic/import_mnemonic_page.dart';
 export 'setup/setup_page.dart';
 export 'confirm_mnemonic/confirm_mnemonic_page.dart';
 export 'splash_screen/splash_screen_page.dart';
+export 'send_coins/send_coins_page.dart';

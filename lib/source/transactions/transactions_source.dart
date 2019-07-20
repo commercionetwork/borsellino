@@ -28,14 +28,16 @@ class TransactionsSource {
   /// inside the given [wallet].
   /// Returns the hash of the transaction once it has been send.
   Future<String> broadcastTransaction(Wallet wallet, StdTx stdTx) async {
+    print("Broadcasting transaction: $stdTx");
+
     // Get the endpoint
     final baseUrl = wallet.account.chain.lcdUrl;
     final apiUrl = "$baseUrl${TransactionsEndpoints.BROADCAST}";
 
     // Build the request body
-    final tx = jsonEncode(stdTx);
-    final requestBody = {"tx": tx, "mode": "sync"};
+    final requestBody = {"tx": stdTx.toJson(), "mode": "sync"};
     final requestBodyJson = jsonEncode(requestBody);
+    print("Sending tx: $requestBodyJson");
 
     // Get the response
     final response = await httpClient.post(apiUrl, body: requestBodyJson);
@@ -43,19 +45,21 @@ class TransactionsSource {
 
     // Get the Tx hash
     final json = jsonDecode(response.body) as Map<String, dynamic>;
-    if (!json.containsKey("hash")) {
+    if (!json.containsKey("txhash")) {
       throw Exception("No hash inside response: $json");
     } else {
-      return json["hash"];
+      print("Tx successfuly sent. Hash: ${json["txhash"]}");
+      return json["txhash"];
     }
   }
 
   /// Given a [stdMessage] and an associated [memo], builds a [StdTx].
-  Future<StdTx> _buildStdTx(
-      Wallet wallet, StdMsg stdMessage, String memo) async {
-    // Create the fee object
-    final fee = StdFee(amount: [], gas: "200000");
-
+  Future<StdTx> _buildStdTx({
+    @required Wallet wallet,
+    @required StdMsg stdMessage,
+    @required String memo,
+    @required StdFee fee,
+  }) async {
     // Assemble the signature JSON object
     final jsonSignData = TransactionsHelper.assembleSignature(
       wallet: wallet,
@@ -104,6 +108,7 @@ class TransactionsSource {
     @required Wallet wallet,
     @required MsgSend message,
     @required String memo,
+    @required StdFee fee,
   }) async {
     // Build the standard message
     final stdMessage = StdMsg(
@@ -111,6 +116,11 @@ class TransactionsSource {
       value: message.toJson(),
     );
 
-    return _buildStdTx(wallet, stdMessage, memo);
+    return _buildStdTx(
+      wallet: wallet,
+      stdMessage: stdMessage,
+      memo: memo,
+      fee: fee,
+    );
   }
 }

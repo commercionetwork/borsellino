@@ -4,8 +4,6 @@ import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
 import 'package:borsellino/pages/pages.dart';
-import 'package:borsellino/pages/send_coins/send_coins_page.dart';
-import 'package:borsellino/pages/validator_details/validator_details_page.dart';
 import 'package:borsellino/repository/repositories.dart';
 import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +16,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final AccountsRepository accountsRepository = BorsellinoInjector.get();
   TabController _tabController;
 
@@ -38,7 +37,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _children = [
       walletOverviewWalletProvider(),
       homeBody(_tabController),
-      SendCoinsPage(),
+      sendCoinsBlocProvider()
     ];
   }
 
@@ -72,10 +71,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 _logout(context);
               })
         ],
-        bottom: _navBarCurrentIndex == 1 ? TabBar(
-          controller: _tabController,
-          tabs: homeTabs,
-        ) : null,
+        bottom: _navBarCurrentIndex == 1
+            ? TabBar(
+                controller: _tabController,
+                tabs: homeTabs,
+              )
+            : null,
       ),
       body: _children[_navBarCurrentIndex],
       bottomNavigationBar: BottomNavigationBar(

@@ -15,8 +15,8 @@ class StdSignatureMessage {
 
   final String sequence;
   final String memo;
-  final StdFee fee;
-  final List<StdMsg> msgs;
+  final Map<String, dynamic> fee;
+  final List<Map<String, dynamic>> msgs;
 
   StdSignatureMessage({
     @required this.chainId,

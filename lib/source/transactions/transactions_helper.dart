@@ -31,9 +31,9 @@ class TransactionsHelper {
       sequence: wallet.sequence,
       accountNumber: wallet.accountNumber,
       chainId: wallet.account.chain.id,
-      fee: fee,
+      fee: fee.toJson(),
       memo: memo,
-      msgs: [message],
+      msgs: [message.toJson()],
     );
 
     // Convert the signature to a JSON and sort it

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'std_coin.g.dart';
-
 /// Contains the data of a specific coin
 @JsonSerializable()
 class StdCoin {
@@ -22,5 +20,8 @@ class StdCoin {
         amount: double.parse(json['amount']) * TOKEN_MULTIPLICATION_FACTOR,
       );
 
-  Map<String, dynamic> toJson() => _$StdCoinToJson(this);
+  Map<String, dynamic> toJson() => {
+        'denom': this.denom,
+        'amount': (this.amount * TOKEN_MULTIPLICATION_FACTOR_REVERSE).toStringAsFixed(0),
+      };
 }
