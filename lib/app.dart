@@ -1,7 +1,6 @@
 import 'package:borsellino/blocprov/blocproviders.dart';
 import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/pages/pages.dart';
-import 'package:borsellino/pages/validator_details/validator_details_page.dart';
 import 'package:borsellino/theme/theme.dart';
 import 'package:flutter/material.dart';
 

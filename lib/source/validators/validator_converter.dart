@@ -35,6 +35,8 @@ class ValidatorConverter {
     return Validator(
         status: status,
         name: validator.name,
+        description: validator.description,
+        website: validator.website,
         identity: validator.identity,
         address: validator.address,
         tokens: validator.tokens,

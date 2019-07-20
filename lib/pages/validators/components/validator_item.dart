@@ -1,9 +1,9 @@
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/pages/validator_details/validator_details_page.dart';
-import 'package:borsellino/pages/validators/components/validator_info.dart';
+import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 
 import 'components.dart';
+import 'validator_info.dart';
 
 /// Stateless widget representing a single validator entry on the
 /// list of all validators
@@ -13,7 +13,11 @@ class ValidatorItem extends StatelessWidget {
   ValidatorItem(this._validator);
 
   void _viewDetails(BuildContext context) {
-    Navigator.pushNamed(context, ValidatorDetailsPage.routeName);
+    Navigator.pushNamed(
+      context,
+      ValidatorDetailsPage.routeName,
+      arguments: ValidatorDetailsArguments(validator: _validator),
+    );
   }
 
   @override

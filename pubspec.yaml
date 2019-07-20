@@ -47,6 +47,9 @@ dependencies:
   # Sharing data
   share: ^0.6.2
 
+  # URL opening
+  url_launcher: ^5.1.0
+
 
 #############
 # Development only dependencies

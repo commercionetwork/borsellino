@@ -7,6 +7,8 @@ class Validator {
   final String name;
   final String address;
   final String identity;
+  final String website;
+  final String description;
   final double tokens;
   final double commissionRate;
   final double yieldPercentage;
@@ -15,6 +17,8 @@ class Validator {
     @required this.status,
     @required this.identity,
     @required this.name,
+    @required this.description,
+    @required this.website,
     @required this.address,
     @required this.tokens,
     @required this.commissionRate,

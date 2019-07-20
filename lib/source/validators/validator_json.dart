@@ -8,14 +8,16 @@ class ValidatorJson {
   final int status;
   final String name;
   final String address;
-  final double tokens;
   final String identity;
   final String website;
+  final String description;
+  final double tokens;
   final double commissionRate;
 
   ValidatorJson({
     @required this.status,
     @required this.name,
+    @required this.description,
     @required this.address,
     @required this.tokens,
     @required this.identity,
@@ -27,6 +29,7 @@ class ValidatorJson {
     return ValidatorJson(
       status: json["status"],
       name: json["description"]["moniker"],
+      description: json["description"]["details"],
       address: json["operator_address"],
       tokens: double.parse(json["tokens"]) * TOKEN_MULTIPLICATION_FACTOR,
       identity: json["description"]["identity"],

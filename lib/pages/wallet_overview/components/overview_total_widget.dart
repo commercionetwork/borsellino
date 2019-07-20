@@ -20,8 +20,8 @@ class WalletTotalWidget extends StatelessWidget {
     // Get the denom by falling back to the default one
     var denom = coin?.denom ?? wallet.account.chain.defaultTokenName;
 
-    // FIXME: This is a patch just for commercio
-    if (denom.toLowerCase() == "ucommercio") {
+    // FIXME: This should be done in some other way
+    if (denom.startsWith("u")) {
       denom = denom.substring(1);
     }
 

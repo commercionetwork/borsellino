@@ -10,7 +10,7 @@ class WordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(4),
       color: Theme.of(context).primaryColorLight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

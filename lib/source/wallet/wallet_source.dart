@@ -80,7 +80,7 @@ class WalletSource {
   Future<List<UnbondingDelegation>> _getUnbondingDelegations(
     Account account,
   ) async {
-    print("Getting delegations data");
+    print("Getting unbonding data");
 
     // Get the endpoint
     final endpoint = sprintf(
@@ -119,12 +119,20 @@ class WalletSource {
     checkResponse(response);
 
     // Parse the data
-    final json = jsonDecode(response.body) as Map;
-
-    // Read the data with fallback if null
     var rewards = [];
-    if (json?.containsKey("total") == true) {
-      rewards = (json["total"] as List);
+    final json = jsonDecode(response.body);
+
+    // Sometimes the rewards are a map...
+    if (json is Map) {
+      // Read the data with fallback if null
+      if (json?.containsKey("total") == true) {
+        rewards = (json["total"] as List);
+      }
+    }
+
+    // ...some other times the rewards are a list
+    if (json is List) {
+      rewards = json;
     }
 
     return rewards.map((object) => StdCoin.fromJson(object)).toList();
