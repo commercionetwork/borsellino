@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// the given [wallet] has.
 class WalletTotalWidget extends StatelessWidget {
   final Wallet wallet;
-  final Coin coin;
+  final StdCoin coin;
 
   const WalletTotalWidget({
     Key key,

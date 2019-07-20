@@ -1,22 +1,23 @@
-import 'package:borsellino/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'std_coin.g.dart';
+
 /// Contains the data of a specific coin
-class Coin {
+@JsonSerializable()
+class StdCoin {
   final String denom;
   final double amount;
 
-  Coin({
+  StdCoin({
     @required this.denom,
     @required this.amount,
   })  : assert(denom != null),
         assert(amount != null);
 
-  factory Coin.fromJson(Map<String, dynamic> json) {
-    return Coin(
-      amount: double.parse(json["amount"]) * TOKEN_MULTIPLICATION_FACTOR,
-      denom: json["denom"],
-    );
-  }
+  factory StdCoin.fromJson(Map<String, dynamic> json) =>
+      _$StdCoinFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StdCoinToJson(this);
 }

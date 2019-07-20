@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/models/wallet/coin.dart';
+import 'package:borsellino/models/transactions/std_coin.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/utils.dart';
 import 'package:borsellino/source/wallet/models/account_data.dart';
@@ -42,7 +42,7 @@ class WalletSource {
 
     // Get the coins
     final coins = ((value["coins"] as List) ?? List())
-        .map((coinMap) => Coin.fromJson(coinMap))
+        .map((coinMap) => StdCoin.fromJson(coinMap))
         .toList();
 
     return AccountData(
@@ -105,7 +105,7 @@ class WalletSource {
     }).toList();
   }
 
-  Future<List<Coin>> _getRewards(Account account) async {
+  Future<List<StdCoin>> _getRewards(Account account) async {
     print("Getting rewards data");
 
     // Get the endpoint
@@ -122,7 +122,7 @@ class WalletSource {
     final json = jsonDecode(response.body) as Map;
     final rewards = (json["total"] as List) ?? List();
 
-    return rewards.map((object) => Coin.fromJson(object)).toList();
+    return rewards.map((object) => StdCoin.fromJson(object)).toList();
   }
 
   /// Allows to return the current wallet instance

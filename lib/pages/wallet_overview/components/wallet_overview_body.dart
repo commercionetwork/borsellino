@@ -27,13 +27,13 @@ class WalletOverviewBody extends StatelessWidget {
   }
 
   List<Widget> _buildCoinData(Wallet wallet) {
-    List<Coin> coins = List();
+    List<StdCoin> coins = List();
     if (wallet.availableCoins.isNotEmpty) {
       coins = wallet.availableCoins;
     } else if (wallet.rewards.isNotEmpty) {
       coins = wallet.rewards;
     } else {
-      coins = [Coin(denom: wallet.account.chain.defaultTokenName, amount: 0.0)];
+      coins = [StdCoin(denom: wallet.account.chain.defaultTokenName, amount: 0.0)];
     }
 
     return coins

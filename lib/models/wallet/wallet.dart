@@ -4,17 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-import 'coin.dart';
+import 'package:borsellino/models/transactions/std_coin.dart';
 
 /// Contains the data of a wallet
 class Wallet {
   final Account account;
   final String accountNumber;
   final String sequence;
-  final List<Coin> availableCoins;
+  final List<StdCoin> availableCoins;
   final List<DelegationData> delegatedCoins;
   final List<UnbondingDelegation> unbondingDelegations;
-  final List<Coin> rewards;
+  final List<StdCoin> rewards;
 
   Wallet({
     @required this.account,
@@ -32,14 +32,14 @@ class Wallet {
         assert(unbondingDelegations != null),
         assert(rewards != null);
 
-  double getTotal(Coin coin) {
+  double getTotal(StdCoin coin) {
     return getAvailable(coin) +
         getDelegated(coin) +
         getUnbonding(coin) +
         getRewards(coin);
   }
 
-  double getAvailable(Coin coin) {
+  double getAvailable(StdCoin coin) {
     final availableCoin = availableCoins
         .where((currentCoin) => currentCoin.denom == coin.denom)
         .toList();
@@ -52,7 +52,7 @@ class Wallet {
     return availableAmount;
   }
 
-  double getDelegated(Coin coin) {
+  double getDelegated(StdCoin coin) {
     // TODO: Take into consideration the coin
     return delegatedCoins.fold(
       0.0,
@@ -60,7 +60,7 @@ class Wallet {
     );
   }
 
-  double getUnbonding(Coin coin) {
+  double getUnbonding(StdCoin coin) {
     // TODO: Take into consideration the coin
     return unbondingDelegations.fold(
       0.0,
@@ -68,7 +68,7 @@ class Wallet {
     );
   }
 
-  double getRewards(Coin coin) {
+  double getRewards(StdCoin coin) {
     // TODO: Take into consideration the coin
     return rewards
         .where((reward) => reward.denom == coin.denom)

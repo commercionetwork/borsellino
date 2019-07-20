@@ -9,7 +9,7 @@ import 'wallet_balance_item.dart';
 /// available, etc.
 class WalletBalanceWidget extends StatelessWidget {
   final Wallet wallet;
-  final Coin coin;
+  final StdCoin coin;
 
   WalletBalanceWidget({this.wallet, this.coin});
 

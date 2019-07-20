@@ -15,6 +15,15 @@ Currently supported chains are:
 ## Developing
 Following you will find some tips on how to easily develop your custom version of Borsellino.
 
+### Setup
+First thing first, run the following command:
+```bash
+flutter pub run build_runner build
+```
+
+This will ensure that the proper JSON converter are generated successfully and you don't run 
+into issues at a later time. 
+
 ### BLoC
 The whole project is based on the [BLoC Library](https://felangel.github.io/bloc/#/).  
 Using it we can ensure separation of concerns between the logic and the presentation part. BLoC are all found inside 

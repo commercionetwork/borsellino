@@ -51,6 +51,10 @@ dependencies:
 #############
 # Development only dependencies
 dev_dependencies:
+  build_runner: ^1.0.0
+  json_serializable: ^3.0.0
+  pedantic: ^1.0.0
+
   flutter_test:
     sdk: flutter
 
