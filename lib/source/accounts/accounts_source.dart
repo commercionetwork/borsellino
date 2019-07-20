@@ -110,24 +110,28 @@ class AccountsSource {
       final entry = privateKeys.entries.elementAt(i);
       final address = entry.key;
       final privateKey = entry.value;
+      print("Reading private key entry $address - $privateKey");
 
       // Get the chain id from the preferences
       final chain = prefs.getString(address);
+      print("Retrieved chain with id $chain");
 
-      // Get the chain data from the source
-      final chainData = await chainsSource.getChainById(chain);
+      if (chain != null) {
+        // Get the chain data from the source
+        final chainData = await chainsSource.getChainById(chain);
 
-      // Decode the private key into bytes
-      final privateKeyBytes = HEX.decode(privateKey);
+        // Decode the private key into bytes
+        final privateKeyBytes = HEX.decode(privateKey);
 
-      // Re-generate the account data
-      final account = await accountHelper.generateAccount(
-        privateKeyBytes,
-        chainData,
-      );
+        // Re-generate the account data
+        final account = await accountHelper.generateAccount(
+          privateKeyBytes,
+          chainData,
+        );
 
-      // Add the generated account into the list
-      accounts.add(account);
+        // Add the generated account into the list
+        accounts.add(account);
+      }
     }
 
     // Return the accounts list
@@ -161,6 +165,12 @@ class AccountsSource {
       // Account found
       return validAccounts[0];
     }
+  }
+
+  /// Returns the private key associated with the given [account].
+  Future<Uint8List> getPrivateKey(Account account) async {
+    final privateKey = await secureStorage.read(key: account.address);
+    return HEX.decode(privateKey);
   }
 
   /// Allows to logout setting the current account as null.

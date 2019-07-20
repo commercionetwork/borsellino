@@ -5,7 +5,11 @@ import 'package:meta/meta.dart';
 /// Contains the data of a single account that the
 /// user can add and later user.
 class Account {
+
+  /// Bech 32 address
   final String address;
+
+  /// Bech 32 public key
   final String publicKey;
   final ChainInfo chain;
 

@@ -8,4 +8,4 @@ export 'wallet/delegations.dart';
 export 'transactions/std_coin.dart';
 export 'transactions/std_fee.dart';
 export 'transactions/std_msg.dart';
-export 'transactions/std_signature.dart';
+export 'transactions/std_signature_message.dart';

@@ -1,34 +1,18 @@
-import 'package:borsellino/models/models.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:borsellino/models/transactions/std_public_key.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'std_signature.g.dart';
 
 @JsonSerializable()
 class StdSignature {
-  @JsonKey(name: 'chain_id')
-  final String chainId;
+  final String signature;
 
-  @JsonKey(name: 'account_number')
-  final String accountNumber;
+  @JsonKey(name: 'pub_key')
+  final StdPublicKey publicKey;
 
-  final String sequence;
-  final String memo;
-  final StdFee fee;
-  final List<Map<String, dynamic>> msgs;
-
-  StdSignature({
-    @required this.chainId,
-    @required this.accountNumber,
-    @required this.sequence,
-    @required this.memo,
-    @required this.fee,
-    @required this.msgs,
-  })  : assert(chainId != null),
-        assert(accountNumber != null),
-        assert(sequence != null),
-        assert(msgs != null);
+  StdSignature({this.signature, this.publicKey})
+      : assert(signature != null),
+        assert(publicKey != null);
 
   factory StdSignature.fromJson(Map<String, dynamic> json) =>
       _$StdSignatureFromJson(json);
