@@ -51,6 +51,8 @@ class _WalletOverviewPageState extends State<WalletOverviewPage> {
 
                 // Error
                 if (state is WalletErrorState) {
+                  _refreshCompleter?.complete();
+                  _refreshCompleter = Completer();
                   return Container(
                     padding: EdgeInsets.all(16),
                     child: Column(

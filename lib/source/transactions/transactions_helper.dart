@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/source/transactions/map_sorter.dart';
+import 'package:borsellino/source/transactions/transaction_signer.dart';
 import 'package:hex/hex.dart';
 import 'package:pointycastle/export.dart';
 
@@ -55,8 +56,11 @@ class TransactionsHelper {
     final bobPublicKey = ECPublicKey(curvePoint, ECCurve_secp256k1());
 
     // Compute the signature
-    //TODO
-//    final signature = Signer.deriveFrom(hash, bobPrivateKey, bobPublicKey);
+    final signature = TransactionSigner.deriveFrom(
+      hash,
+      bobPrivateKey,
+      bobPublicKey,
+    );
 
     // Encode the signature as a Base64 string and return it
     return base64Encode(signature);

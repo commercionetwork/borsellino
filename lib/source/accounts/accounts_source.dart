@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:borsellino/models/models.dart';
@@ -27,6 +28,14 @@ class AccountsSource {
   })  : assert(chainsSource != null),
         assert(secureStorage != null),
         assert(accountHelper != null);
+
+  final StreamController<Account> accountController = StreamController.broadcast();
+
+  /// Returns a stream that emits the values of the current account as
+  /// soon as it changes.
+  Stream<Account> getCurrentAccountStream() {
+    return accountController.stream;
+  }
 
   /// Creates a new account based on the given [privateKey] bytes and for
   /// the given [chain]. After creating it, it stores the private key into
@@ -83,6 +92,7 @@ class AccountsSource {
   Future<void> saveAccountAsCurrent(Account account) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_currentAccountKey, account.address);
+    accountController.add(account);
   }
 
   /// Returns the list of all the accounts securely stored into the device.
