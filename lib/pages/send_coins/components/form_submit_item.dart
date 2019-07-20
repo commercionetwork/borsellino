@@ -22,7 +22,7 @@ class FormSubmitItem extends StatelessWidget {
           ),
         RaisedButton(
           onPressed: onPressed,
-          child: Text('Sumbmit'),
+          child: Text('Submit'),
         )
       ],
     );
