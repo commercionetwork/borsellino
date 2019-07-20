@@ -27,10 +27,9 @@ class SourcesModule implements Module {
             httpClient: injector.get(),
           ))
       ..bindLazySingleton((injector, p) => TransactionsSource(
-        httpClient: injector.get(),
-        accountsSource: injector.get(),
-        walletSource: injector.get()
-      ))
+            httpClient: injector.get(),
+            accountsSource: injector.get(),
+          ))
       ..bindLazySingleton((injector, p) => MnemonicSource());
   }
 }

@@ -1,3 +1,4 @@
+import 'package:borsellino/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -18,7 +19,7 @@ class StdCoin {
 
   factory StdCoin.fromJson(Map<String, dynamic> json) => StdCoin(
         denom: json['denom'] as String,
-        amount: double.parse(json['amount']),
+        amount: double.parse(json['amount']) * TOKEN_MULTIPLICATION_FACTOR,
       );
 
   Map<String, dynamic> toJson() => _$StdCoinToJson(this);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:borsellino/bloc/blocs.dart';
+import 'package:borsellino/models/models.dart';
 import 'package:borsellino/pages/wallet_overview/components/wallet_overview_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

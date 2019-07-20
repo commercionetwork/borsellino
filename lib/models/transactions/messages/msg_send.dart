@@ -1,5 +1,6 @@
 import 'package:borsellino/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'msg_send.g.dart';
 
@@ -14,9 +15,9 @@ class MsgSend {
   final List<StdCoin> amount;
 
   MsgSend({
-    this.fromAddress,
-    this.toAddress,
-    this.amount,
+    @required this.fromAddress,
+    @required this.toAddress,
+    @required this.amount,
   })  : assert(fromAddress != null),
         assert(toAddress != null),
         assert(amount != null);

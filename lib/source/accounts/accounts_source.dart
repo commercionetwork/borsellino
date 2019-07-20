@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'account_helper.dart';
 
 /// Source that must be used when dealing with accounts.
+/// TODO: Move the private keys management outside this source
 class AccountsSource {
   // Current account key
   static const _currentAccountKey = "AccountSource#currentAccount";
