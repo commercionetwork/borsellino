@@ -5,6 +5,7 @@ import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/pages/send_coins/send_coins_page.dart';
+import 'package:borsellino/pages/validator_details/validator_details_page.dart';
 import 'package:borsellino/repository/repositories.dart';
 import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _children = [
       walletOverviewWalletProvider(),
       homeBody(_tabController),
-      SendCoinsPage()
+      SendCoinsPage(),
     ];
   }
 

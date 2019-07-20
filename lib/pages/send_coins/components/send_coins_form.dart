@@ -35,7 +35,6 @@ class _SendCoinsFormState extends State<SendCoinsForm> {
     return Container(
       padding: EdgeInsets.all(16),
       child: Form(
-        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[

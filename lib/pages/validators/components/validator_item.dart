@@ -1,4 +1,5 @@
 import 'package:borsellino/models/models.dart';
+import 'package:borsellino/pages/validator_details/validator_details_page.dart';
 import 'package:borsellino/pages/validators/components/validator_info.dart';
 import 'package:flutter/material.dart';
 
@@ -11,16 +12,16 @@ class ValidatorItem extends StatelessWidget {
 
   ValidatorItem(this._validator);
 
+  void _viewDetails(BuildContext context) {
+    Navigator.pushNamed(context, ValidatorDetailsPage.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Card(
         child: InkWell(
-          onTap: () {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text('Not implemented yet'),
-            ));
-          },
+          onTap: () => _viewDetails(context),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
