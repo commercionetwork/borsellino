@@ -16,8 +16,10 @@ class StdCoin {
   })  : assert(denom != null),
         assert(amount != null);
 
-  factory StdCoin.fromJson(Map<String, dynamic> json) =>
-      _$StdCoinFromJson(json);
+  factory StdCoin.fromJson(Map<String, dynamic> json) => StdCoin(
+        denom: json['denom'] as String,
+        amount: double.parse(json['amount']),
+      );
 
   Map<String, dynamic> toJson() => _$StdCoinToJson(this);
 }

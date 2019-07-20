@@ -6,8 +6,10 @@ part 'std_fee.g.dart';
 
 @JsonSerializable()
 class StdFee {
-  final List<StdCoin> amount;
   final String gas;
+
+  @JsonKey(includeIfNull: true)
+  final List<StdCoin> amount;
 
   StdFee({
     @required this.amount,
