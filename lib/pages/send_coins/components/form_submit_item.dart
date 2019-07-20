@@ -1,30 +1,30 @@
+import 'package:borsellino/pages/send_coins/components/send_coins_form.dart';
 import 'package:flutter/material.dart';
 
-
-
+/// Represents the submit button inside the form
 class FormSubmitItem extends StatelessWidget {
+  final FormStatus formState;
+  final Function onPressed;
 
-  GlobalKey<FormState> _formKey;
-
-  FormSubmitItem(this._formKey);
+  FormSubmitItem({
+    @required this.formState,
+    @required this.onPressed
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 50),
-      child: RaisedButton(
-        highlightColor: Colors.lightBlueAccent,
-        elevation: 10,
-        onPressed: () {
-          if(_formKey.currentState.validate()){
-            Scaffold
-                .of(context)
-                .showSnackBar(SnackBar(content: Text('Processing Data')));
-          }
-        },
-        child: Text('Sumbmit'),
-      ),
+    return Column(
+      children: <Widget>[
+        if (formState == FormStatus.INVALID)
+          Text(
+            "Invalid data",
+            style: TextStyle(color: Colors.red),
+          ),
+        RaisedButton(
+          onPressed: onPressed,
+          child: Text('Submit'),
+        )
+      ],
     );
   }
 }

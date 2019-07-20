@@ -7,6 +7,11 @@ class AccountsRepository {
 
   AccountsRepository(this.accountsSource);
 
+  /// Returns a Stream emitting new account values as they are created.
+  Stream<Account> getAccountStream() {
+    return accountsSource.getCurrentAccountStream();
+  }
+
   /// Creates a new account based on the given [mnemonic] and for the given
   /// [chain].
   Future<Account> createAccount(List<String> mnemonic, ChainInfo chain) async {

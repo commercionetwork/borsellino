@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:borsellino/models/models.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'account_helper.dart';
 
 /// Source that must be used when dealing with accounts.
+/// TODO: Move the private keys management outside this source
 class AccountsSource {
   // Current account key
   static const _currentAccountKey = "AccountSource#currentAccount";
@@ -27,6 +29,14 @@ class AccountsSource {
   })  : assert(chainsSource != null),
         assert(secureStorage != null),
         assert(accountHelper != null);
+
+  final StreamController<Account> accountController = StreamController.broadcast();
+
+  /// Returns a stream that emits the values of the current account as
+  /// soon as it changes.
+  Stream<Account> getCurrentAccountStream() {
+    return accountController.stream;
+  }
 
   /// Creates a new account based on the given [privateKey] bytes and for
   /// the given [chain]. After creating it, it stores the private key into
@@ -83,6 +93,7 @@ class AccountsSource {
   Future<void> saveAccountAsCurrent(Account account) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_currentAccountKey, account.address);
+    accountController.add(account);
   }
 
   /// Returns the list of all the accounts securely stored into the device.
@@ -100,24 +111,28 @@ class AccountsSource {
       final entry = privateKeys.entries.elementAt(i);
       final address = entry.key;
       final privateKey = entry.value;
+      print("Reading private key entry $address - $privateKey");
 
       // Get the chain id from the preferences
       final chain = prefs.getString(address);
+      print("Retrieved chain with id $chain");
 
-      // Get the chain data from the source
-      final chainData = await chainsSource.getChainById(chain);
+      if (chain != null) {
+        // Get the chain data from the source
+        final chainData = await chainsSource.getChainById(chain);
 
-      // Decode the private key into bytes
-      final privateKeyBytes = HEX.decode(privateKey);
+        // Decode the private key into bytes
+        final privateKeyBytes = HEX.decode(privateKey);
 
-      // Re-generate the account data
-      final account = await accountHelper.generateAccount(
-        privateKeyBytes,
-        chainData,
-      );
+        // Re-generate the account data
+        final account = await accountHelper.generateAccount(
+          privateKeyBytes,
+          chainData,
+        );
 
-      // Add the generated account into the list
-      accounts.add(account);
+        // Add the generated account into the list
+        accounts.add(account);
+      }
     }
 
     // Return the accounts list
@@ -151,6 +166,12 @@ class AccountsSource {
       // Account found
       return validAccounts[0];
     }
+  }
+
+  /// Returns the private key associated with the given [account].
+  Future<Uint8List> getPrivateKey(Account account) async {
+    final privateKey = await secureStorage.read(key: account.address);
+    return HEX.decode(privateKey);
   }
 
   /// Allows to logout setting the current account as null.

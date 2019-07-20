@@ -1,6 +1,7 @@
 import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'word_item.dart';
 
@@ -44,30 +45,27 @@ class MnemonicGeneratedBody extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).primaryColor),
-              ),
-              padding: EdgeInsets.all(8),
-              child: GridView.count(
-                childAspectRatio: 1.75,
-                shrinkWrap: true,
+            Expanded(
+              child: StaggeredGridView.countBuilder(
+                  shrinkWrap: true,
                 crossAxisCount: 4,
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 4.0,
-                children: mnemonic
-                    .asMap()
-                    .map(
-                        (index, word) => MapEntry(index, WordItem(index, word)))
-                    .values
-                    .toList(),
+                itemCount: mnemonic.length,
+                itemBuilder: (_, index) {
+                  final word = mnemonic[index];
+                  return WordItem(index, word);
+                },
+                staggeredTileBuilder: (index) {
+                  return StaggeredTile.fit(1);
+                },
               ),
             ),
             SizedBox(height: 16),
             RaisedButton(
               child: Text("Continue"),
               onPressed: () => _goToMnemonicVerificationPage(context),
-            )
+            ),
           ],
         ),
       ),

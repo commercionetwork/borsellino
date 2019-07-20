@@ -11,7 +11,6 @@ import 'package:protobuf/protobuf.dart';
 
 /// Allows to easily perform common operations related to the accounts
 class AccountHelper {
-
   /// Cosmos constants
   static const _aminoPubKeyPrefix = "eb5ae987";
   static const _derivePath = "m/44'/118'/0'/0/0";
@@ -36,7 +35,10 @@ class AccountHelper {
     final bech32address = _deriveBech32Address(address, chain);
 
     return Account(
-        address: bech32address, publicKey: bech32PublicKey, chain: chain);
+      address: bech32address,
+      publicKey: bech32PublicKey,
+      chain: chain,
+    );
   }
 
   /// Allows to derive a private key from the given seed

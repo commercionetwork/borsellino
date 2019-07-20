@@ -12,19 +12,25 @@ class WordItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8),
       color: Theme.of(context).primaryColorLight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            (index + 1).toString(),
-            style: TextStyle(fontSize: 12),
-          ),
-          SizedBox(height: 4),
-          Text(
-            word,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                (index + 1).toString(),
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(height: 4),
+              Text(
+                word,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          )
         ],
       ),
     );

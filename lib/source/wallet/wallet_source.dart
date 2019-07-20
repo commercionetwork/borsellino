@@ -120,7 +120,12 @@ class WalletSource {
 
     // Parse the data
     final json = jsonDecode(response.body) as Map;
-    final rewards = (json["total"] as List) ?? List();
+
+    // Read the data with fallback if null
+    var rewards = [];
+    if (json?.containsKey("total") == true) {
+      rewards = (json["total"] as List);
+    }
 
     return rewards.map((object) => StdCoin.fromJson(object)).toList();
   }
