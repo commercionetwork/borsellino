@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/bloc/import_mnemonic/import_mnemonic_event.dart';
-import 'package:borsellino/models/account/account.dart';
 import './bloc.dart';
 
 class ImportMnemonicBloc

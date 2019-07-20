@@ -1,7 +1,6 @@
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/models/wallet/delegations.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 import 'package:borsellino/models/transactions/std_coin.dart';

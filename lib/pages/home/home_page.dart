@@ -7,7 +7,6 @@ import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/pages/send_coins/send_coins_page.dart';
 import 'package:borsellino/repository/repositories.dart';
 import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
-import 'package:borsellino/pages/wallet_overview/wallet_overview_page.dart';
 import 'package:flutter/material.dart';
 
 /// Represents the home page of the application

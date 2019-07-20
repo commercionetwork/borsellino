@@ -24,6 +24,7 @@ class _SendCoinsFormState extends State<SendCoinsForm> {
         borderRadius: BorderRadius.circular(3),
       ),
       child: Form(
+        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

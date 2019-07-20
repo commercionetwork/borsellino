@@ -12,10 +12,23 @@ class FormFeeItem extends StatefulWidget {
 
 class _FormFeeItemState extends State<FormFeeItem> {
 
+  double _result = 0.0;
 
   void _handleRadioValueChange(int value){
     setState(() {
       widget.radioValue = value;
+
+      switch(widget.radioValue){
+        case 0:
+          _result = 0.000001;
+          break;
+        case 1:
+          _result = 0.000250;
+          break;
+        case 2:
+          _result = 0.002500;
+          break;
+      }
     });
   }
 
