@@ -3,3 +3,4 @@ export 'chains/chains_repository.dart';
 export 'validators/validator_repository.dart';
 export 'mnemonic/mnemonic_repository.dart';
 export 'wallet/wallet_repository.dart';
+export 'transactions/transactions_repository.dart';

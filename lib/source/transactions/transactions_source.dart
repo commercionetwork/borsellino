@@ -7,7 +7,9 @@ import 'package:borsellino/models/transactions/std_tx.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/transactions/messages/msg_send.dart';
 import 'package:borsellino/source/transactions/transactions_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
 class TransactionsSource {
   final http.Client httpClient;
@@ -15,9 +17,9 @@ class TransactionsSource {
   final AccountsSource accountsSource;
 
   TransactionsSource({
-    this.httpClient,
-    this.walletSource,
-    this.accountsSource,
+    @required this.httpClient,
+    @required this.walletSource,
+    @required this.accountsSource,
   })  : assert(httpClient != null),
         assert(walletSource != null),
         assert(accountsSource != null);
@@ -78,7 +80,10 @@ class TransactionsSource {
 
   /// Given a [MsgSend] and an associated [memo], returns a
   /// [StdTx] object made for that message.
-  Future<StdTx> createSendTransaction({MsgSend message, String memo}) async {
+  Future<StdTx> createSendTransaction({
+    @required MsgSend message,
+    @required String memo,
+  }) async {
     // Build the standard message
     final stdMessage = StdMsg(
       type: "cosmos-sdk/MsgSend",

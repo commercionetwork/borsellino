@@ -9,6 +9,7 @@ class RepositoryModule implements Module {
       ..bindLazySingleton((injector, p) => ValidatorsRepository(injector.get()))
       ..bindLazySingleton((injector, p) => MnemonicRepository(injector.get()))
       ..bindLazySingleton((injector, p) => AccountsRepository(injector.get()))
-      ..bindLazySingleton((injector, p) => WalletRepository(injector.get()));
+      ..bindLazySingleton((injector, p) => WalletRepository(injector.get()))
+      ..bindLazySingleton((injector, p) => TransactionsRepository(injector.get()));
   }
 }
