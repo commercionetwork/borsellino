@@ -23,7 +23,7 @@ In order to run the this project you must satisfy the given pre-requisites:
 
 - Having an Android or iOS emulator setup (alternatively, an Android or iOS physical device connected to your pc). 
 
-**Note**. For Android-based systems, the application will only work on devices running Android Lollipop (API 21) or later. 
+**Note**. For Android-based systems, the application will only work on devices running Android 4.3 (API 18) or later. 
 
 ### Setup
 **1**. Switch to the master branch of Flutter by running:
@@ -47,7 +47,20 @@ flutter pub run build_runner build
 flutter run 
 ```
 
+## Security concerns 
+Working with Flutter means that we had to rely on third-party code in order to manage some security-related parts of the 
+application. In particular, we used the [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage) 
+library to manage the private keys saving and reading. If you want to know more on how we interact with those high-risk 
+cryptographic parts, you can take a look at our source code, especially at the following files:
 
+* [`accounts_source.dart`](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart)
+where all the accounts are [stored](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart#L45) 
+and [read](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart#L100)
+
+* [`transactions_source.dart`](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/transactions/transactions_source.dart)
+where the private keys are [retrieved](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/transactions/transactions_source.dart#L72) 
+before signing a transaction. 
+ 
 
 ## Project architecture
 
