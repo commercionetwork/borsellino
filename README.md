@@ -8,12 +8,12 @@ from a remote source. This means that adding a new supported chain is no harder 
 Currently supported chains are: 
 
 | Project | Chains versions | Repository | 
-| :------ | :--------- | |:------------: |
+| :------ | :-------------: | :--------- |
 | Bitsong.io | `bitsong-testnet-1` | https://github.com/bitsongofficial/go-bitsong |
 | Commercio.network | `commercio-testnet1001` | https://github.com/commercionetwork/commercionetwork |
 | Cosmos Mainnet | `cosmos-hub2` | https://github.com/cosmos/cosmos-sdk | 
 | Kava | `kava-testnet-1.1` | https://github.com/Kava-Labs/kava |
-| Regen.network Testnet | `regent-test-1001` | https://github.com/regen-network/regen-ledger | 
+| Regen.network | `regent-test-1001` | https://github.com/regen-network/regen-ledger | 
 
 ## Running
 In order to run the this project you must satisfy the given pre-requisites:
