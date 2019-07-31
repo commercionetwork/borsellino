@@ -88,15 +88,19 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
       denom: coin.denom,
     );
 
-    // Compose the message
-    final sendMsg = MsgSend(
+    // Build the standard message
+    final stdMessage = StdMsg(
+      type: "cosmos-sdk/MsgSend",
+      value: MsgSend(
         amount: [amount],
         fromAddress: wallet.account.bech32Address,
-        toAddress: sendData.recipient);
+        toAddress: sendData.recipient,
+      ).toJson(),
+    );
 
     // Create the StdTx
-    final stdTx = await transactionsRepository.createSendTx(
-      message: sendMsg,
+    final stdTx = await transactionsRepository.createStdTx(
+      message: stdMessage,
       wallet: wallet,
       fee: fee,
     );

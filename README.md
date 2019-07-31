@@ -4,6 +4,9 @@ Entirely made with [Flutter](https://flutter.dev/), it fetches the data about th
 from a remote source. This means that adding a new supported chain is no harder than submitting a PR to the proper 
 [GitHub repository](https://github.com/RiccardoM/CosmosHub-Chains) 😉.
 
+This project was born as Commercio.network's entry at the [Seoul HackAtom 2019](https://blog.cosmos.network/cosmos-hackatom-is-coming-to-seoul-f2cb83172307).
+
+
 ## Supported chains
 Currently supported chains are: 
 
@@ -51,15 +54,8 @@ flutter run
 Working with Flutter means that we had to rely on third-party code in order to manage some security-related parts of the 
 application. In particular, we used the [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage) 
 library to manage the private keys saving and reading. If you want to know more on how we interact with those high-risk 
-cryptographic parts, you can take a look at our source code, especially at the following files:
-
-* [`accounts_source.dart`](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart)
-where all the accounts are [stored](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart#L45) 
-and [read](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/accounts/accounts_source.dart#L100)
-
-* [`transactions_source.dart`](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/transactions/transactions_source.dart)
-where the private keys are [retrieved](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/transactions/transactions_source.dart#L72) 
-before signing a transaction. 
+cryptographic parts, you can take a look at our source code, especially at the file [`keys_source.dart`](https://github.com/Commercionetwork/Seul-Hackatom-2019/blob/master/lib/source/keys/keys_source.dart)
+where all the keys are saved and read when creating a new account or signing a transaction.  
  
 
 ## Project architecture

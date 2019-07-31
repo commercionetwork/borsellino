@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:borsellino/models/models.dart';
@@ -6,17 +7,14 @@ import 'package:borsellino/source/sources.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
-import 'package:hex/hex.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 import 'account_helper.dart';
 
 /// Source that must be used when dealing with accounts.
 /// TODO: Move the private keys management outside this source
 class AccountsSource {
-  // Current account key
-  static const _currentAccountKey = "AccountSource#currentAccount";
-
   final KeysSource keysSource;
   final ChainsSource chainsSource;
   final AccountHelper accountHelper;
@@ -26,15 +24,30 @@ class AccountsSource {
     @required this.chainsSource,
     @required this.accountHelper,
   })  : assert(chainsSource != null),
+        assert(keysSource != null),
         assert(accountHelper != null);
 
-  final StreamController<Account> accountController =
+  // Store reference to save all the accounts
+  final StoreRef<dynamic, dynamic> _accountsStore = StoreRef("accounts");
+
+  // Store reference to save the current account
+  final StoreRef<dynamic, dynamic> _currentAccountStore =
+      StoreRef("current_account");
+
+  // Current account key used inside the store
+  static const _currentAccountKey = "currentAccount";
+
+  // Used to emit new current account values
+  final StreamController<Account> _accountController =
       StreamController.broadcast();
 
-  /// Returns a stream that emits the values of the current account as
-  /// soon as it changes.
-  Stream<Account> getCurrentAccountStream() {
-    return accountController.stream;
+  /// Returns the reference to the database of the accounts
+  Future<Database> _getDatabase() async {
+    Directory folder = await getApplicationDocumentsDirectory();
+    String dbPath = "accounts.db";
+
+    DatabaseFactory dbFactory = createDatabaseFactoryIo(rootPath: folder.path);
+    return await dbFactory.openDatabase(dbPath, version: 1);
   }
 
   /// Creates a new account based on the given [privateKey] bytes and for
@@ -42,11 +55,17 @@ class AccountsSource {
   /// the secure storage and the address and chain relation into the
   /// preferences for later retrieval.
   Future<Account> _saveAccount(Account account, ChainInfo chain) async {
-    // Save the association between the address and the chain
-    // TODO: This should be saved inside files or something like this.
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(account.bech32Address, chain.id);
+    // Save the account
+    final database = await _getDatabase();
 
+    // Store the data
+    await _accountsStore.record(account.bech32Address).put(
+          database,
+          account.toJson(),
+          merge: true,
+        );
+
+    // Return the account after storing
     return account;
   }
 
@@ -84,88 +103,51 @@ class AccountsSource {
 
   /// Allows to set the given [account] as the currently used account.
   Future<void> saveAccountAsCurrent(Account account) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_currentAccountKey, account.bech32Address);
-    accountController.add(account);
+    // Get the database
+    final database = await _getDatabase();
+
+    // Store the data
+    await _currentAccountStore.record(_currentAccountKey).put(
+          database,
+          account == null ? null : account.toJson(),
+        );
+
+    _accountController.add(account);
   }
 
   /// Returns the list of all the accounts securely stored into the device.
   Future<List<Account>> listAccounts() async {
-    // List all the private keys
-    final privateKeys = await secureStorage.readAll();
+    // Get the database
+    final database = await _getDatabase();
 
-    // Get a reference to the SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-
-    // Define the accounts
-    final List<Account> accounts = List();
-
-    for (var i = 0; i < privateKeys.entries.length; i++) {
-      final entry = privateKeys.entries.elementAt(i);
-      final address = entry.key;
-      final privateKey = entry.value;
-      print("Reading private key entry $address - $privateKey");
-
-      // Get the chain id from the preferences
-      final chain = prefs.getString(address);
-      print("Retrieved chain with id $chain");
-
-      if (chain != null) {
-        // Get the chain data from the source
-        final chainData = await chainsSource.getChainById(chain);
-
-        // Decode the private key into bytes
-        final privateKeyBytes = HEX.decode(privateKey);
-
-        // Re-generate the account data
-        final account = await accountHelper.generateAccount(
-          privateKeyBytes,
-          chainData,
-        );
-
-        // Add the generated account into the list
-        accounts.add(account);
-      }
-    }
+    // List all the accounts
+    final records = await _accountsStore.find(database);
 
     // Return the accounts list
-    return accounts;
+    return records.map((item) => Account.fromJson(item.value)).toList();
   }
 
   /// Returns the current account, or null if no account could be found.
   Future<Account> getCurrentAccount() async {
-    // Get the current account address
-    final prefs = await SharedPreferences.getInstance();
-    final accountAddress = prefs.getString(_currentAccountKey);
+    // Get the database
+    final database = await _getDatabase();
 
-    if (accountAddress == null) {
-      print("No account set into the preferences");
-      // No current account set, return null
-      return null;
-    }
+    // Read the data
+    final accountSnap =
+        await _currentAccountStore.record(_currentAccountKey).get(database);
 
-    // List the accounts
-    final accounts = await listAccounts();
+    // If the current account is null, return null
+    return accountSnap == null ? null : Account.fromJson(accountSnap);
+  }
 
-    // Search the one having the same address
-    final validAccounts = accounts
-        .where((account) => account.bech32Address == accountAddress)
-        .toList();
-
-    if (validAccounts.isEmpty) {
-      print("No account matching the latest one found");
-      // No account with same address found
-      return null;
-    } else {
-      // Account found
-      return validAccounts[0];
-    }
+  /// Returns a stream that emits the values of the current account as
+  /// soon as it changes.
+  Stream<Account> getCurrentAccountStream() {
+    return _accountController.stream;
   }
 
   /// Allows to logout setting the current account as null.
   Future<void> logout() async {
-    // Set the current account as null
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_currentAccountKey, null);
+    return saveAccountAsCurrent(null);
   }
 }
