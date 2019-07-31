@@ -29,14 +29,17 @@ dependencies:
   bitcoin_flutter: ^1.0.7
   pointycastle: ^1.0.1
   bip_bech32: ^0.1.3
-  protobuf: ^0.13.12
+
+  # Serialization
   json_annotation: ^2.4.0
+  protobuf: ^0.13.12
 
   # Secure storage
   flutter_secure_storage: ^3.2.1+1
 
-  # Shared preferences
-  shared_preferences: ^0.5.3+4
+  # noSQLite database
+  path_provider: ^1.2.0
+  sembast: ^2.0.1
 
   # String formatting
   sprintf: ^4.0.2

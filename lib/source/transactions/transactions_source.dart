@@ -6,28 +6,33 @@ import 'package:borsellino/models/transactions/std_signature.dart';
 import 'package:borsellino/models/transactions/std_tx.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/transactions/endpoints.dart';
-import 'package:borsellino/source/transactions/transactions_helper.dart';
 import 'package:borsellino/source/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+import 'map_sorter.dart';
+
 /// Source that needs to be used when working with transactions (creating,
 /// signing and sending) .
 class TransactionsSource {
   final http.Client httpClient;
+
   final AccountsSource accountsSource;
+  final KeysSource keysSource;
 
   TransactionsSource({
     @required this.httpClient,
     @required this.accountsSource,
+    @required this.keysSource,
   })  : assert(httpClient != null),
-        assert(accountsSource != null);
+        assert(accountsSource != null),
+        assert(keysSource != null);
 
   /// Broadcasts the given [stdTx] using the info contained
   /// inside the given [wallet].
   /// Returns the hash of the transaction once it has been send.
-  Future<String> broadcastTransaction(Wallet wallet, StdTx stdTx) async {
+  Future<String> broadcastStdTx(Wallet wallet, StdTx stdTx) async {
     print("Broadcasting transaction: $stdTx");
 
     // Get the endpoint
@@ -54,27 +59,33 @@ class TransactionsSource {
   }
 
   /// Given a [stdMessage] and an associated [memo], builds a [StdTx].
-  Future<StdTx> _buildStdTx({
+  Future<StdTx> buildStdTx({
     @required Wallet wallet,
     @required StdMsg stdMessage,
     @required String memo,
     @required StdFee fee,
   }) async {
-    // Assemble the signature JSON object
-    final jsonSignData = TransactionsHelper.assembleSignature(
-      wallet: wallet,
-      message: stdMessage,
-      fee: fee,
+    // Create the signature object
+    final signature = StdSignatureMessage(
+      sequence: wallet.sequence,
+      accountNumber: wallet.accountNumber,
+      chainId: wallet.account.chain.id,
+      fee: fee.toJson(),
       memo: memo,
+      msgs: [stdMessage.toJson()],
     );
 
-    // Get the private key
-    final privateKey = await accountsSource.getPrivateKey(wallet.account);
+    // Convert the signature to a JSON and sort it
+    final jsonSignature = signature.toJson();
+    final sortedJson = MapSorter.sort(jsonSignature);
+
+    // Encode the sorted JSON to a string
+    final jsonSignData = json.encode(sortedJson);
 
     // Sign the message
-    final signatureData = TransactionsHelper.signMessage(
+    final signatureData = await keysSource.signStdSignature(
       jsonSignData,
-      privateKey,
+      wallet.account,
     );
 
     // Get the compressed Base64 public key
@@ -99,28 +110,6 @@ class TransactionsSource {
       memo: memo,
       messages: [stdMessage],
       signatures: [stdSignature],
-    );
-  }
-
-  /// Given a [MsgSend] and an associated [memo], returns a
-  /// [StdTx] object made for that message.
-  Future<StdTx> createSendTransaction({
-    @required Wallet wallet,
-    @required MsgSend message,
-    @required String memo,
-    @required StdFee fee,
-  }) async {
-    // Build the standard message
-    final stdMessage = StdMsg(
-      type: "cosmos-sdk/MsgSend",
-      value: message.toJson(),
-    );
-
-    return _buildStdTx(
-      wallet: wallet,
-      stdMessage: stdMessage,
-      memo: memo,
-      fee: fee,
     );
   }
 }

@@ -11,23 +11,23 @@ class TransactionsRepository {
   /// Creates a [StdTx] object containing the given [message] and [memo].
   /// The message will be signed using the information contained inside the
   /// given [wallet].
-  Future<StdTx> createSendTx({
+  Future<StdTx> createStdTx({
     @required Wallet wallet,
-    @required MsgSend message,
+    @required StdMsg message,
     @required StdFee fee,
     String memo = "",
   }) async {
-    return transactionsSource.createSendTransaction(
+    return transactionsSource.buildStdTx(
       wallet: wallet,
       memo: memo,
-      message: message,
-      fee: fee
+      stdMessage: message,
+      fee: fee,
     );
   }
 
   /// Broadcasts the given [transaction] using the information contained
   /// inside the given [wallet].
   Future<String> broadcastTx({StdTx transaction, Wallet wallet}) async {
-    return transactionsSource.broadcastTransaction(wallet, transaction);
+    return transactionsSource.broadcastStdTx(wallet, transaction);
   }
 }

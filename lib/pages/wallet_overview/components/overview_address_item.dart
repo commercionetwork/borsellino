@@ -43,7 +43,7 @@ class WalletAddressWidget extends StatelessWidget {
             Text("Address:", style: subTitleTextStyle),
             FittedBox(
               fit: BoxFit.fitWidth,
-              child: Text(wallet.account.address, style: valueTextStyle),
+              child: Text(wallet.account.bech32Address, style: valueTextStyle),
             ),
             largeSeparator,
             IconButton(

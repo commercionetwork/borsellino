@@ -1,11 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:bip_bech32/bip_bech32.dart' as prefix0;
 import 'package:borsellino/crypto/bech32_encoder.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:hex/hex.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bitcoin_flutter/bitcoin_flutter.dart';
-import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:pointycastle/export.dart';
 import 'package:protobuf/protobuf.dart';
 
@@ -18,16 +16,9 @@ class AccountHelper {
   // TODO: Let chains specify this?
   static const _pubKeyHrpPrefix = "pub";
 
-  /// Generates a private key from the given mnemonic code
-  Future<Uint8List> generatePrivateKey(List<String> mnemonic) async {
-    final seed = bip39.mnemonicToSeed(mnemonic.join(' '));
-    return _derivePrivateKey(seed);
-  }
-
-  /// Creates an account data from the given private key and chain information.
-  Future<Account> generateAccount(Uint8List privateKey, ChainInfo chain) async {
-    // Public key derivation
-    final publicKey = _derivePublicKey(privateKey);
+  /// Creates an account data from the given public key and chain information.
+  Future<Account> generateAccount(Uint8List publicKey, ChainInfo chain) async {
+    // Public key encoding
     final bech32PublicKey = _deriveBech32PublicKey(publicKey, chain);
 
     // Address derivation
@@ -35,27 +26,11 @@ class AccountHelper {
     final bech32address = _deriveBech32Address(address, chain);
 
     return Account(
-      address: bech32address,
-      publicKey: bech32PublicKey,
+      publicKey: publicKey,
+      bech32Address: bech32address,
+      bech32PublicKey: bech32PublicKey,
       chain: chain,
     );
-  }
-
-  /// Allows to derive a private key from the given seed
-  Uint8List _derivePrivateKey(Uint8List seed) {
-    final mainNode = HDWallet.fromSeed(seed);
-    final derivedNode = mainNode.derivePath(_derivePath);
-    return HEX.decode(derivedNode.privKey);
-  }
-
-  /// Derives a public key from the given private key
-  Uint8List _derivePublicKey(Uint8List privateKey) {
-    final secp256k1 = ECCurve_secp256k1();
-    final point = secp256k1.G;
-    final bigInt = BigInt.parse(HEX.encode(privateKey), radix: 16);
-    final curvePoint = point * bigInt;
-    final publicKey = curvePoint.getEncoded();
-    return publicKey;
   }
 
   /// Encodes the given public key bytes into the Bech32 format
@@ -88,5 +63,10 @@ class AccountHelper {
   /// specific for the given chain.
   String _deriveBech32Address(Uint8List address, ChainInfo chain) {
     return Bech32Encoder.encode('${chain.bech32Hrp}', address);
+  }
+
+  /// Decodes the given [address] into its [Uint8List] format.
+  Uint8List _decodeAddress(String address) {
+    return Bech32Encoder.decode(address);
   }
 }

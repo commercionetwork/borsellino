@@ -27,7 +27,7 @@ class WalletSource {
     print("Getting account data");
 
     // Build the wallet api url
-    final endpoint = sprintf(WalletEndpoints.ACCOUNT, [account.address]);
+    final endpoint = sprintf(WalletEndpoints.ACCOUNT, [account.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${account.chain.lcdUrl}$endpoint";
@@ -57,7 +57,7 @@ class WalletSource {
     print("Getting delegators data");
 
     // Get the endpoint
-    final endpoint = sprintf(WalletEndpoints.DELEGATIONS, [account.address]);
+    final endpoint = sprintf(WalletEndpoints.DELEGATIONS, [account.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${account.chain.lcdUrl}$endpoint";
@@ -85,7 +85,7 @@ class WalletSource {
     // Get the endpoint
     final endpoint = sprintf(
       WalletEndpoints.UNBONDING_DELEGATIONS,
-      [account.address],
+      [account.bech32Address],
     );
 
     // Build the API URL
@@ -109,7 +109,7 @@ class WalletSource {
     print("Getting rewards data");
 
     // Get the endpoint
-    final endpoint = sprintf(WalletEndpoints.REWARDS, [account.address]);
+    final endpoint = sprintf(WalletEndpoints.REWARDS, [account.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${account.chain.lcdUrl}$endpoint";
@@ -142,7 +142,7 @@ class WalletSource {
   Future<Wallet> getCurrentWallet() async {
     // Get the current account
     final account = await accountsSource.getCurrentAccount();
-    print("Getting data for account with address ${account.address}");
+    print("Getting data for account with address ${account.bech32Address}");
 
     // Get all the data
     final accountData = await _getAccountData(account);
