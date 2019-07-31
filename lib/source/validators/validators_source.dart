@@ -4,18 +4,17 @@ import 'package:borsellino/models/models.dart';
 import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/utils.dart';
+import 'package:borsellino/source/validators/apis.dart';
 import 'package:borsellino/source/validators/validator_converter.dart';
 import 'package:borsellino/source/validators/validator_json.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:sprintf/sprintf.dart';
 
 /// Source that should be used when retrieving data related to
 /// validators.
 class ValidatorSource {
-  // Endpoints
-  static const _validatorsEndpoint = "staking/validators";
-
   final AccountsSource accountsSource;
   final http.Client httpClient;
 
@@ -29,6 +28,7 @@ class ValidatorSource {
         assert(httpClient != null),
         assert(converter != null);
 
+  /// Returns the chain information for the currently selected account.
   Future<ChainInfo> _getChainInfo() async {
     final account = await accountsSource.getCurrentAccount();
     if (account == null) {
@@ -37,12 +37,13 @@ class ValidatorSource {
     return account.chain;
   }
 
+  /// Returns the list of all the validators satisfying the given [filter].
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
     // Get the chain info
     final chain = await _getChainInfo();
 
     // Get the API url based on the account chain
-    var apiUrl = "${chain.lcdUrl}/$_validatorsEndpoint";
+    var apiUrl = sprintf(ValidatorsEndpoints.LIST, [chain.lcdUrl]);
     print("Getting validators from: $apiUrl");
 
     // Update the URL including the status
@@ -62,6 +63,8 @@ class ValidatorSource {
     return _checkValidatorsResponse(response);
   }
 
+  /// Makes sure the given [response] contains a valid list of validators
+  /// and returns that list.
   List<Validator> _checkValidatorsResponse(http.Response response) {
     // Check the response
     checkResponse(response);
@@ -77,13 +80,17 @@ class ValidatorSource {
     return converter.convert(validatorJsons);
   }
 
+  /// Returns the [String] representing the URL of the icon
+  /// of the given [validator], or `null` if nothing can be found.
   Future<String> getValidatorImageUrl(Validator validator) async {
     // Get the chain info
     final chain = await _getChainInfo();
 
     // Get the details URL
-    final detailsApi =
-        "${chain.lcdUrl}/$_validatorsEndpoint/${validator.address}";
+    final detailsApi = sprintf(
+      ValidatorsEndpoints.DETAILS,
+      [chain.lcdUrl, validator.address],
+    );
 
     // Get the details of the validator
     final response = await httpClient.get(detailsApi);
@@ -98,28 +105,20 @@ class ValidatorSource {
       return null;
     }
 
-    // TODO: Save as constant somewhere
-    final keyApi =
-        "https://keybase.io/_/api/1.0/key/fetch.json?pgp_key_ids=$identity";
+    // Get the autocompletion API response
+    final keyApi = sprintf(ValidatorsEndpoints.ICON, [identity]);
     final keyBaseResponse = await httpClient.get(keyApi);
     checkResponse(keyBaseResponse);
 
-    // Get the key fingerprint
-    final keysData = json.decode(keyBaseResponse.body) as Map<String, dynamic>;
-    final key = (keysData["keys"] as List)[0] as Map<String, dynamic>;
-    final keyFingerprint = key["key_fingerprint"];
-
-    // TODO: Save as constant
-    final iconApi =
-        "https://keybase.io/_/api/1.0/user/lookup.json?key_fingerprint=$keyFingerprint&fields=pictures";
-    final iconResponse = await httpClient.get(iconApi);
-    checkResponse(iconResponse);
-
     // Parse the data
-    final data = json.decode(iconResponse.body) as Map<String, dynamic>;
-    final them = data["them"][0];
-    final picture = them["pictures"]["primary"]["url"];
+    final data = json.decode(keyBaseResponse.body) as Map<String, dynamic>;
+    final completions = data["completions"] as List;
+    if (completions.isEmpty) {
+      return null;
+    }
 
-    return picture;
+    // Get the thumbnail
+    final completionData = completions[0] as Map<String, dynamic>;
+    return completionData["thumbnail"];
   }
 }
