@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+part 'chain_info.g.dart';
 
 /// Contains all the data that a chain must provide in order
 /// to be selectable when creating a new wallet.
+@JsonSerializable()
 class ChainInfo {
   final String id;
   final String iconUrl;
@@ -28,4 +32,9 @@ class ChainInfo {
         assert(rpcUrl != null),
         assert(bech32Hrp != null),
         assert(defaultTokenName != null);
+
+  factory ChainInfo.fromJson(Map<String, dynamic> json) =>
+      _$ChainInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChainInfoToJson(this);
 }

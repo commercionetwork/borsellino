@@ -35,7 +35,7 @@ class ChainSelectionBloc
           "No mnemonic or account provided. Cannot create a new account");
     }
 
-    print("Generated account address: ${account.address}");
+    print("Generated account address: ${account.bech32Address}");
 
     // Set the account as current
     accountsRepo.setAccountAsCurrent(account);

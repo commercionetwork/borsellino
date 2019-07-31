@@ -24,7 +24,7 @@ class AccountsLoadedBody extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.all(8),
             leading: _buildIcon(account),
-            title: Text(account.address),
+            title: Text(account.bech32Address),
           ),
           onTap: () => callback(account),
         );

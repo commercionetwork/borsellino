@@ -41,7 +41,7 @@ class SharingDialog {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                wallet.account.address,
+                wallet.account.bech32Address,
                 maxLines: 1,
                 style: addressTextStyle,
               ),
@@ -74,13 +74,13 @@ class SharingDialog {
   }
 
   static void _copy(BuildContext context, Wallet wallet) {
-    Clipboard.setData(ClipboardData(text: wallet.account.address));
+    Clipboard.setData(ClipboardData(text: wallet.account.bech32Address));
     Navigator.pop(context);
   }
 
   static void _share(BuildContext context, Wallet wallet) {
     final account = wallet.account;
-    Share.share("This is my ${account.chain.name} address: ${account.address}");
+    Share.share("This is my ${account.chain.name} address: ${account.bech32Address}");
     Navigator.pop(context);
   }
 }

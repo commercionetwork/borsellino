@@ -91,7 +91,7 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
     // Compose the message
     final sendMsg = MsgSend(
         amount: [amount],
-        fromAddress: wallet.account.address,
+        fromAddress: wallet.account.bech32Address,
         toAddress: sendData.recipient);
 
     // Create the StdTx
