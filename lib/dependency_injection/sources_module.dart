@@ -19,12 +19,10 @@ class SourcesModule implements Module {
             httpClient: injector.get(),
             converter: ValidatorConverter(),
           ))
-      ..bindLazySingleton((injector, p) => KeysSource(
-        keysHelper: KeysHelper(),
-        secureStorage: injector.get()
-      ))
+      ..bindLazySingleton((injector, p) =>
+          KeysSource(keysHelper: KeysHelper(), secureStorage: injector.get()))
       ..bindLazySingleton((injector, p) => AccountsSource(
-        keysSource: injector.get(),
+            keysSource: injector.get(),
             chainsSource: injector.get(),
             accountHelper: AccountHelper(),
           ))
@@ -33,6 +31,7 @@ class SourcesModule implements Module {
             httpClient: injector.get(),
           ))
       ..bindLazySingleton((injector, p) => TransactionsSource(
+            keysSource: injector.get(),
             httpClient: injector.get(),
             accountsSource: injector.get(),
           ))
