@@ -3,9 +3,9 @@ import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/pages/home/components/home_body.dart';
 import 'package:borsellino/pages/home/components/home_tabs.dart';
+import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/repository/repositories.dart';
-import 'package:borsellino/pages/home/components/navigation_item_builder.dart';
 import 'package:flutter/material.dart';
 
 /// Represents the home page of the application
@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final AccountsRepository accountsRepository = BorsellinoInjector.get();
+  final AccountRepository accountsRepository = BorsellinoInjector.get();
   TabController _tabController;
 
   int _navBarCurrentIndex = 0;

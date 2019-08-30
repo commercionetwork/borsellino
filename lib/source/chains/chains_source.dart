@@ -1,17 +1,19 @@
 import 'dart:convert';
 
-import 'package:borsellino/models/models.dart';
-import 'package:borsellino/source/chains/chain_info_json.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:sacco/sacco.dart';
 
-import 'chain_info_converter.dart';
+import 'network_info_converter.dart';
+import 'network_info_json.dart';
+
+export 'network_info_converter.dart';
 
 class ChainsSource {
   final http.Client httpClient;
 
-  final ChainInfoConverter converter;
+  final NetworkInfoConverter converter;
 
   ChainsSource({
     @required this.httpClient,
@@ -20,7 +22,7 @@ class ChainsSource {
         assert(converter != null);
 
   /// Allows to retrieve the list of all the supported chains.
-  Future<List<ChainInfo>> getChains() async {
+  Future<List<NetworkInfo>> getChains() async {
     final apiUrl =
         "https://raw.githubusercontent.com/RiccardoM/CosmosHub-Chains/master/chains.json";
 
@@ -31,10 +33,10 @@ class ChainsSource {
 
       // Get the JSON objects
       final chainsInfoJsons = chainsInfoList
-          .map((object) => ChainInfoJson.fromJson(object))
+          .map((object) => NetworkInfoJson.fromJson(object))
           .toList();
 
-      // Get the real ChainInfo entities
+      // Get the real NetworkInfo entities
       final chains =
           chainsInfoJsons.map((info) => converter.convert(info)).toList();
 
@@ -51,7 +53,7 @@ class ChainsSource {
   /// Throws exception if no chain is found.
   /// TODO: This should have a dedicated endpoint and not the list every time
   /// TODO: Maybe add a local database for faster loading?
-  Future<ChainInfo> getChainById(String chainId) async {
+  Future<NetworkInfo> getChainById(String chainId) async {
     final chains = await getChains();
     final chainsData = chains.where((chain) => chain.id == chainId).toList();
 

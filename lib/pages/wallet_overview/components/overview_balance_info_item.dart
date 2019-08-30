@@ -1,14 +1,14 @@
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/pages/wallet_overview/components/overview_total_widget.dart';
-import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:sacco/sacco.dart';
 
 import 'wallet_balance_item.dart';
 
 /// Contains all the data related to the wallet amounts such as delegated,
 /// available, etc.
 class WalletBalanceWidget extends StatelessWidget {
-  final Wallet wallet;
+  final Account wallet;
   final StdCoin coin;
 
   WalletBalanceWidget({this.wallet, this.coin});

@@ -1,4 +1,4 @@
-class WalletEndpoints {
+class AccountEndpoints {
   static const ACCOUNT = "/auth/accounts/%s";
   static const REWARDS = "/distribution/delegators/%s/rewards";
   static const DELEGATIONS = "/staking/delegators/%s/delegations";

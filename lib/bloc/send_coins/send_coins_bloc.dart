@@ -1,16 +1,18 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/bloc/send_coins/send_coins_state.dart';
 import 'package:borsellino/bloc/send_coins/send_data.dart';
+import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
-import 'package:borsellino/models/models.dart';
 import 'package:borsellino/repository/repositories.dart';
+import 'package:sacco/sacco.dart';
+
 import './bloc.dart';
 
 class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
-  final WalletRepository walletRepository = BorsellinoInjector.get();
-  final TransactionsRepository transactionsRepository =
-      BorsellinoInjector.get();
+  final AccountRepository walletRepository = BorsellinoInjector.get();
+  final TransactionsRepository txRepo = BorsellinoInjector.get();
 
   @override
   SendCoinsState get initialState => InitialSendCoinsState(SendData());
@@ -63,28 +65,28 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
     final sendData = event.sendData;
 
     // Get the wallet
-    final wallet = await walletRepository.getCurrentWallet();
+    final account = await walletRepository.getCurrentAccount();
 
     // Get the coin
     String coinDenom;
-    if (wallet.availableCoins.isEmpty) {
+    if (account.availableCoins.isEmpty) {
       throw Exception("No coins available");
     } else {
       // TODO: Get this from the event
-      coinDenom = wallet.availableCoins[0].denom;
+      coinDenom = account.availableCoins[0].denom;
     }
 
     // Build the fee
     final fee = StdFee(gas: "200000", amount: [
       StdCoin(
-        amount: sendData.feeAmount,
+        amount: (sendData.feeAmount * TOKEN_MULTIPLICATION_FACTOR).toString(),
         denom: coinDenom,
       )
     ]);
 
     // Build the amount
     final amount = StdCoin(
-      amount: sendData.amount,
+      amount: (sendData.amount * TOKEN_MULTIPLICATION_FACTOR).toString(),
       denom: coinDenom,
     );
 
@@ -93,22 +95,21 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
       type: "cosmos-sdk/MsgSend",
       value: MsgSend(
         amount: [amount],
-        fromAddress: wallet.account.bech32Address,
+        fromAddress: account.wallet.bech32Address,
         toAddress: sendData.recipient,
       ).toJson(),
     );
 
     // Create the StdTx
-    final stdTx = await transactionsRepository.createStdTx(
-      message: stdMessage,
-      wallet: wallet,
-      fee: fee,
-    );
+    final stdTx = txRepo.createStdTx(message: stdMessage, fee: fee);
+
+    // Sign the StdTx
+    final signedTx = await txRepo.signStdTx(account: account, stdTx: stdTx);
 
     // Try broadcasting the transaction
-    final txHash = await transactionsRepository.broadcastTx(
-      transaction: stdTx,
-      wallet: wallet,
+    final txHash = await txRepo.broadcastTx(
+      transaction: signedTx,
+      account: account,
     );
     return txHash;
   }

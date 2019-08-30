@@ -12,7 +12,7 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   var showSelectAccount = false;
-  final AccountsRepository repository = BorsellinoInjector.get();
+  final AccountRepository repository = BorsellinoInjector.get();
 
   @override
   void initState() {

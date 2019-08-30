@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:borsellino/source/sources.dart';
-import 'package:borsellino/source/utils.dart';
 import 'package:borsellino/source/validators/apis.dart';
-import 'package:borsellino/source/validators/validator_converter.dart';
-import 'package:borsellino/source/validators/validator_json.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:sacco/sacco.dart';
 import 'package:sprintf/sprintf.dart';
+
+import 'validator_converter.dart';
+import 'validator_json.dart';
+
+export 'validator_converter.dart';
 
 /// Source that should be used when retrieving data related to
 /// validators.
 class ValidatorSource {
-  final AccountsSource accountsSource;
+  final AccountSource accountsSource;
   final http.Client httpClient;
 
   final ValidatorConverter converter;
@@ -29,18 +31,18 @@ class ValidatorSource {
         assert(converter != null);
 
   /// Returns the chain information for the currently selected account.
-  Future<ChainInfo> _getChainInfo() async {
+  Future<NetworkInfo> _getNetworkInfo() async {
     final account = await accountsSource.getCurrentAccount();
     if (account == null) {
       throw Exception("Null account");
     }
-    return account.chain;
+    return account.wallet.networkInfo;
   }
 
   /// Returns the list of all the validators satisfying the given [filter].
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
     // Get the chain info
-    final chain = await _getChainInfo();
+    final chain = await _getNetworkInfo();
 
     // Get the API url based on the account chain
     var apiUrl = sprintf(ValidatorsEndpoints.LIST, [chain.lcdUrl]);
@@ -84,7 +86,7 @@ class ValidatorSource {
   /// of the given [validator], or `null` if nothing can be found.
   Future<String> getValidatorImageUrl(Validator validator) async {
     // Get the chain info
-    final chain = await _getChainInfo();
+    final chain = await _getNetworkInfo();
 
     // Get the details URL
     final detailsApi = sprintf(

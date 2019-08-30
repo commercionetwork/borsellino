@@ -1,6 +1,6 @@
-import 'package:borsellino/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:sacco/sacco.dart';
 
 @immutable
 abstract class ChainSelectionState extends Equatable {
@@ -17,7 +17,7 @@ class LoadingChainsState extends ChainSelectionState {}
 /// State that is set when the chains have all being loaded
 /// and are ready to be displayed
 class LoadedChainsState extends ChainSelectionState {
-  final List<ChainInfo> chains;
+  final List<NetworkInfo> chains;
   LoadedChainsState(this.chains) : super([chains]);
 }
 

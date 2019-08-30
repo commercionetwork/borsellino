@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:borsellino/bloc/blocs.dart';
-import 'package:borsellino/models/chain/chain_info.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sacco/sacco.dart';
 
-import 'components/chains_list_body.dart';
 import 'components/arguments.dart';
+import 'components/chains_list_body.dart';
 
 export 'components/arguments.dart';
 
@@ -99,7 +99,7 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
   void _generateAccount(
     ChainSelectionBloc chainSelectionBloc,
     ChainSelectionArguments args,
-    ChainInfo chain,
+      NetworkInfo chain,
     BuildContext context,
   ) {
     // Generate the account
@@ -107,7 +107,7 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
         .generateAccount(
       mnemonic: args.mnemonic,
       account: args.account,
-      chainInfo: chain,
+      networkInfo: chain,
     )
         .then((account) {
       // Go to the home page

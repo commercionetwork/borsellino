@@ -4,7 +4,7 @@ import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
 
 class WalletAddressWidget extends StatelessWidget {
-  final Wallet wallet;
+  final Account wallet;
 
   WalletAddressWidget(this.wallet);
 
@@ -38,12 +38,12 @@ class WalletAddressWidget extends StatelessWidget {
             Text("My wallet", style: titleTextStyle),
             largeSeparator,
             Text("Chain:", style: subTitleTextStyle),
-            Text(wallet.account.chain.name, style: valueTextStyle),
+            Text(wallet.wallet.networkInfo.name, style: valueTextStyle),
             smallSeparator,
             Text("Address:", style: subTitleTextStyle),
             FittedBox(
               fit: BoxFit.fitWidth,
-              child: Text(wallet.account.bech32Address, style: valueTextStyle),
+              child: Text(wallet.wallet.bech32Address, style: valueTextStyle),
             ),
             largeSeparator,
             IconButton(

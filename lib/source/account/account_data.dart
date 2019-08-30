@@ -1,4 +1,4 @@
-import 'package:borsellino/models/transactions/std_coin.dart';
+import 'package:sacco/sacco.dart';
 
 class AccountData {
   final String accountNumber;

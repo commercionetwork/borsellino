@@ -24,7 +24,7 @@ class AccountsLoadedBody extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.all(8),
             leading: _buildIcon(account),
-            title: Text(account.bech32Address),
+            title: Text(account.wallet.bech32Address),
           ),
           onTap: () => callback(account),
         );
@@ -34,6 +34,7 @@ class AccountsLoadedBody extends StatelessWidget {
   }
 
   Widget _buildIcon(Account account) {
-    return Image.network(account.chain.iconUrl ?? DEFAULT_CHAIN_IMAGE_URL);
+    return Image.network(
+        account.wallet.networkInfo.iconUrl ?? DEFAULT_CHAIN_IMAGE_URL);
   }
 }

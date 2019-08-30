@@ -1,16 +1,16 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/repository/repositories.dart';
-import 'bloc.dart';
 
+import 'bloc.dart';
 
 /// [Bloc] implementation used to display the wallet overview to the
 /// user inside the main application page
 class WalletOverviewBloc
     extends Bloc<WalletOverviewEvent, WalletOverviewState> {
-  final AccountsRepository accountRepo = BorsellinoInjector.get();
-  final WalletRepository walletRepository = BorsellinoInjector.get();
+  final AccountRepository accountRepo = BorsellinoInjector.get();
 
   WalletOverviewBloc() {
     // Listen for account changes in order to properly update the wallet info
@@ -32,7 +32,7 @@ class WalletOverviewBloc
 
       try {
         // Get the wallet
-        final wallet = await walletRepository.getCurrentWallet();
+        final wallet = await accountRepo.getCurrentAccount();
         print("Retrieved current wallet");
 
         // Tell that we loaded it
