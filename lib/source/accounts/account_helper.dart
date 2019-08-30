@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:bip_bech32/bip_bech32.dart' as prefix0;
 import 'package:borsellino/crypto/bech32_encoder.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:hex/hex.dart';
@@ -11,7 +10,6 @@ import 'package:protobuf/protobuf.dart';
 class AccountHelper {
   /// Cosmos constants
   static const _aminoPubKeyPrefix = "eb5ae987";
-  static const _derivePath = "m/44'/118'/0'/0/0";
 
   // TODO: Let chains specify this?
   static const _pubKeyHrpPrefix = "pub";
@@ -62,11 +60,6 @@ class AccountHelper {
   /// Encodes the given address bytes into the Bech32 format
   /// specific for the given chain.
   String _deriveBech32Address(Uint8List address, ChainInfo chain) {
-    return Bech32Encoder.encode('${chain.bech32Hrp}', address);
-  }
-
-  /// Decodes the given [address] into its [Uint8List] format.
-  Uint8List _decodeAddress(String address) {
-    return Bech32Encoder.decode(address);
+    return Bech32Encoder.encode(chain.bech32Hrp, address);
   }
 }

@@ -1,10 +1,8 @@
 import 'package:borsellino/source/accounts/account_helper.dart';
 import 'package:borsellino/source/chains/chain_info_converter.dart';
-import 'package:borsellino/source/keys/keys_helper.dart';
 import 'package:borsellino/source/sources.dart';
 import 'package:borsellino/source/validators/validator_converter.dart';
 import 'package:dependencies/dependencies.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SourcesModule implements Module {
   @override
@@ -20,7 +18,7 @@ class SourcesModule implements Module {
             converter: ValidatorConverter(),
           ))
       ..bindLazySingleton((injector, p) =>
-          KeysSource(keysHelper: KeysHelper(), secureStorage: injector.get()))
+          KeysSource(secureStorage: injector.get()))
       ..bindLazySingleton((injector, p) => AccountsSource(
             keysSource: injector.get(),
             chainsSource: injector.get(),

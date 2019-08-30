@@ -66,26 +66,26 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
     final wallet = await walletRepository.getCurrentWallet();
 
     // Get the coin
-    StdCoin coin;
+    String coinDenom;
     if (wallet.availableCoins.isEmpty) {
       throw Exception("No coins available");
     } else {
       // TODO: Get this from the event
-      coin = wallet.availableCoins[0];
+      coinDenom = wallet.availableCoins[0].denom;
     }
 
     // Build the fee
     final fee = StdFee(gas: "200000", amount: [
       StdCoin(
         amount: sendData.feeAmount,
-        denom: coin.denom,
+        denom: coinDenom,
       )
     ]);
 
     // Build the amount
     final amount = StdCoin(
       amount: sendData.amount,
-      denom: coin.denom,
+      denom: coinDenom,
     );
 
     // Build the standard message

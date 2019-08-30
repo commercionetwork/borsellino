@@ -17,14 +17,14 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-
-    // Try getting the existing accounts to decide if the
-    // button to select one should be visible or not
-    _getAccounts();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Try getting the existing accounts to decide if the
+    // button to select one should be visible or not
+    _getAccounts();
+
     // Try getting the current account and change
     // page accordingly to the result
     _getCurrentAccount(context);

@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/chains_list_body.dart';
 import 'components/arguments.dart';
-import 'components/generating_account_dialog.dart';
 
 export 'components/arguments.dart';
 
@@ -64,7 +63,7 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
               return ChainListBody(
                 chains: state.chains,
                 callback: (chain) {
-                  _onChainSelected(context, bloc, args, chain);
+                  _generateAccount(bloc, args, chain, context);
                 },
               );
             }
@@ -93,25 +92,6 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
     );
   }
 
-  /// Called when a chain has been selected.
-  /// It shows a popup and start the generation of the account
-  void _onChainSelected(
-    BuildContext context,
-    ChainSelectionBloc bloc,
-    ChainSelectionArguments args,
-    ChainInfo chain,
-  ) {
-    // Show the loading popup
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => generatingAccountDialog(),
-    );
-
-    // Generate the account
-    _generateAccount(bloc, args, chain, context);
-  }
-
   /// Allows to generate a new account using the given [bloc],
   /// [args] and [chain].
   /// Once the generation has finished, it brings the user to the
@@ -121,19 +101,21 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
     ChainSelectionArguments args,
     ChainInfo chain,
     BuildContext context,
-  ) async {
+  ) {
     // Generate the account
-    await chainSelectionBloc.generateAccount(
+    chainSelectionBloc
+        .generateAccount(
       mnemonic: args.mnemonic,
       account: args.account,
       chainInfo: chain,
-    );
-
-    // Go to the home page
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      HomePage.routeName,
-      (_) => false,
-    );
+    )
+        .then((account) {
+      // Go to the home page
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomePage.routeName,
+        (_) => false,
+      );
+    });
   }
 }

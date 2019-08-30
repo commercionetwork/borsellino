@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/source/keys/keys_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bip39/bip39.dart' as bip39;
@@ -18,15 +17,11 @@ import 'signature_data.dart';
 class KeysSource {
   /// Constants
   static const DERIVATION_PATH = "m/44'/118'/0'/0/0";
-
   final FlutterSecureStorage secureStorage;
-  final KeysHelper keysHelper;
 
   KeysSource({
     @required this.secureStorage,
-    @required this.keysHelper,
-  })  : assert(secureStorage != null),
-        assert(keysHelper != null);
+  })  : assert(secureStorage != null);
 
   /// Derives the private key from the given [mnemonic].
   Future<Uint8List> derivePublicKeyKey(List<String> mnemonic) async {

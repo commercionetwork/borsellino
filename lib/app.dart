@@ -13,7 +13,6 @@ class BorsellinoApp extends StatelessWidget {
       theme: borsellinoTheme(),
       initialRoute: SplashScreenPage.routeName,
       routes: {
-        // TODO: Change this with a splash screen
         SplashScreenPage.routeName: (context) => SplashScreenPage(),
         HomePage.routeName: (context) => HomePage(),
         ImportMnemonicPage.routeName: (context) => importMnemonicBlocProvider(),

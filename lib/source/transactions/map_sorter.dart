@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
-
 /// Allows to easily sort a [Map] by its keys.
 class MapSorter {
 
@@ -35,8 +33,6 @@ class MapSorter {
     // Get the sorted keys
     final sortedKeys = map.keys.toList();
     sortedKeys.sort();
-
-    print(sortedKeys);
 
     // Sort each value
     final result = SplayTreeMap<String, dynamic>();

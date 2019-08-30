@@ -19,6 +19,9 @@ class ChainSelectionBloc
     Account account,
     ChainInfo chainInfo,
   }) async {
+
+    print("Generating a new account");
+
     if (mnemonic != null) {
       // Create a new account account
       account = await accountsRepo.createAccount(
