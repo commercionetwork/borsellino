@@ -1,11 +1,11 @@
 import 'package:borsellino/constants/constants.dart';
-import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:sacco/sacco.dart';
 
-typedef void ChainSelectionCallback(ChainInfo chain);
+typedef void ChainSelectionCallback(NetworkInfo chain);
 
 class ChainListBody extends StatefulWidget {
-  final List<ChainInfo> chains;
+  final List<NetworkInfo> chains;
   final ChainSelectionCallback callback;
 
   ChainListBody({
@@ -24,7 +24,7 @@ class _ChainListBodyState extends State<ChainListBody> {
     return ListView.separated(
       itemCount: widget.chains.length,
       itemBuilder: (context, index) {
-        final ChainInfo chain = widget.chains[index];
+        final NetworkInfo chain = widget.chains[index];
 
         return InkWell(
           child: ListTile(
@@ -39,7 +39,7 @@ class _ChainListBodyState extends State<ChainListBody> {
     );
   }
 
-  Widget _buildIcon(ChainInfo chain) {
+  Widget _buildIcon(NetworkInfo chain) {
     return Image.network(chain.iconUrl ?? DEFAULT_CHAIN_IMAGE_URL);
   }
 }

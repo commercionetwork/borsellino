@@ -1,4 +1,3 @@
-import 'package:borsellino/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
@@ -26,15 +25,23 @@ class ValidatorJson {
   });
 
   factory ValidatorJson.fromMap(Map<String, dynamic> json) {
+    double commissionRate = 0.0;
+    Map<String, dynamic> commissionMap = json["commission"];
+    if (commissionMap.containsKey("commission_rates")) {
+      commissionRate = double.parse(commissionMap["commission_rates"]["rate"]);
+    } else {
+      commissionRate = double.parse(commissionMap["rate"]);
+    }
+
     return ValidatorJson(
       status: json["status"],
       name: json["description"]["moniker"],
       description: json["description"]["details"],
       address: json["operator_address"],
-      tokens: double.parse(json["tokens"]) * TOKEN_MULTIPLICATION_FACTOR,
+      tokens: double.parse(json["tokens"]),
       identity: json["description"]["identity"],
       website: json["description"]["website"],
-      commissionRate: double.parse(json["commission"]["rate"]),
+      commissionRate: commissionRate,
     );
   }
 }

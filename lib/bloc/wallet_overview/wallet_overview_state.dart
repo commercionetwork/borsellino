@@ -12,7 +12,7 @@ class InitialWalletOverviewState extends WalletOverviewState {}
 class LoadingWalletDataState extends WalletOverviewState {}
 
 class WalletDataLoadedState extends WalletOverviewState {
-  final Wallet wallet;
+  final Account wallet;
 
   WalletDataLoadedState(this.wallet) : super([wallet]);
 }

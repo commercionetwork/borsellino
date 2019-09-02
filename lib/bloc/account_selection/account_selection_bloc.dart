@@ -1,13 +1,15 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/repository/repositories.dart';
+
 import './bloc.dart';
 
 class AccountSelectionBloc
     extends Bloc<AccountSelectionEvent, AccountSelectionState> {
-  final AccountsRepository accountsRepo = BorsellinoInjector.get();
+  final AccountRepository accountsRepo = BorsellinoInjector.get();
 
   @override
   AccountSelectionState get initialState => InitialAccountSelectionState();

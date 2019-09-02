@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:borsellino/bloc/blocs.dart';
-import 'package:borsellino/models/chain/chain_info.dart';
+import 'package:borsellino/pages/account_generation/account_generation_page.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sacco/sacco.dart';
 
-import 'components/chains_list_body.dart';
 import 'components/arguments.dart';
+import 'components/chains_list_body.dart';
 
 export 'components/arguments.dart';
 
@@ -62,9 +63,7 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
               _refreshCompleter = Completer();
               return ChainListBody(
                 chains: state.chains,
-                callback: (chain) {
-                  _generateAccount(bloc, args, chain, context);
-                },
+                callback: (chain) => _generateAccount(context, args, chain),
               );
             }
 
@@ -92,30 +91,14 @@ class _ChainSelectionPageState extends State<ChainSelectionPage> {
     );
   }
 
-  /// Allows to generate a new account using the given [bloc],
-  /// [args] and [chain].
-  /// Once the generation has finished, it brings the user to the
-  /// [HomePage].
-  void _generateAccount(
-    ChainSelectionBloc chainSelectionBloc,
+  void _generateAccount(BuildContext context,
     ChainSelectionArguments args,
-    ChainInfo chain,
-    BuildContext context,
+      NetworkInfo chain,
   ) {
-    // Generate the account
-    chainSelectionBloc
-        .generateAccount(
-      mnemonic: args.mnemonic,
-      account: args.account,
-      chainInfo: chain,
-    )
-        .then((account) {
-      // Go to the home page
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomePage.routeName,
-        (_) => false,
-      );
-    });
+    Navigator.pushNamed(
+      context,
+      AccountGenerationPage.routeName,
+      arguments: GenerateAccountArguments(args.mnemonic, args.account, chain),
+    );
   }
 }

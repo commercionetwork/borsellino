@@ -1,7 +1,6 @@
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:borsellino/source/sources.dart';
-import 'package:meta/meta.dart';
 
 /// Class representing the repository that should be contact when dealing
 /// with validators.

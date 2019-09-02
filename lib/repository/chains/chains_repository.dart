@@ -1,5 +1,5 @@
-import 'package:borsellino/models/models.dart';
 import 'package:borsellino/source/sources.dart';
+import 'package:sacco/sacco.dart';
 
 class ChainsRepository {
   final ChainsSource source;
@@ -7,7 +7,7 @@ class ChainsRepository {
   ChainsRepository(this.source);
 
   /// Lists all the supported chains.
-  Future<List<ChainInfo>> listChains() async {
+  Future<List<NetworkInfo>> listChains() async {
     return await source.getChains();
   }
 }

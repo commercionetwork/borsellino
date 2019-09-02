@@ -2,11 +2,12 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/theme/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:sacco/sacco.dart';
 
 /// Contains the name and the total amount of the given [coin] that
 /// the given [wallet] has.
 class WalletTotalWidget extends StatelessWidget {
-  final Wallet wallet;
+  final Account wallet;
   final StdCoin coin;
 
   const WalletTotalWidget({
@@ -18,7 +19,7 @@ class WalletTotalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the denom by falling back to the default one
-    var denom = coin?.denom ?? wallet.account.chain.defaultTokenName;
+    var denom = coin?.denom ?? wallet.wallet.networkInfo.defaultTokenDenom;
 
     // FIXME: This should be done in some other way
     if (denom.startsWith("u")) {

@@ -4,13 +4,14 @@ import 'package:borsellino/pages/wallet_overview/components/overview_balance_inf
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sacco/sacco.dart';
 
 /// Body that is displayed inside the wallet overview once the wallet
 /// info is properly loaded.
 class WalletOverviewBody extends StatelessWidget {
-  final Wallet wallet;
+  final Account wallet;
 
-  WalletOverviewBody(this.wallet);
+  WalletOverviewBody(this.wallet) : assert(wallet != null);
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +27,16 @@ class WalletOverviewBody extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildCoinData(Wallet wallet) {
+  List<Widget> _buildCoinData(Account wallet) {
     List<StdCoin> coins = List();
     if (wallet.availableCoins.isNotEmpty) {
       coins = wallet.availableCoins;
     } else if (wallet.rewards.isNotEmpty) {
       coins = wallet.rewards;
     } else {
-      coins = [StdCoin(denom: wallet.account.chain.defaultTokenName, amount: 0.0)];
+      coins = [
+        StdCoin(denom: wallet.wallet.networkInfo.defaultTokenDenom, amount: "0")
+      ];
     }
 
     return coins

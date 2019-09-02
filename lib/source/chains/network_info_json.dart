@@ -1,38 +1,38 @@
 import 'package:meta/meta.dart';
 
-class ChainInfoJson {
+class NetworkInfoJson {
   final String id;
   final String iconUrl;
   final String name;
   final String lcdUrl;
   final String rpcUrl;
   final String bech32Hrp;
-  final String defaultTokenName;
+  final String defaultTokenDenom;
 
-  ChainInfoJson({
+  NetworkInfoJson({
     @required this.id,
     @required this.iconUrl,
     @required this.name,
     @required this.lcdUrl,
     @required this.rpcUrl,
     @required this.bech32Hrp,
-    @required this.defaultTokenName,
+    @required this.defaultTokenDenom,
   })  : assert(id != null),
         assert(name != null),
         assert(lcdUrl != null),
         assert(rpcUrl != null),
         assert(bech32Hrp != null),
-        assert(defaultTokenName != null);
+        assert(defaultTokenDenom != null);
 
-  factory ChainInfoJson.fromJson(Map<String, dynamic> json) {
-    return ChainInfoJson(
+  factory NetworkInfoJson.fromJson(Map<String, dynamic> json) {
+    return NetworkInfoJson(
       id: json["id"],
       iconUrl: json["icon"],
       name: json["name"],
       lcdUrl: json["lcd_url"],
       rpcUrl: json["rpc_url"],
       bech32Hrp: json["bech32_hrp"],
-      defaultTokenName: json["token"],
+      defaultTokenDenom: json["token"],
     );
   }
 }

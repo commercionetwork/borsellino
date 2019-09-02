@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:borsellino/bloc/validators/validators_event.dart';
 import 'package:borsellino/dependency_injection/injector.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:borsellino/repository/repositories.dart';
+
 import './bloc.dart';
 
 /// Represents the BLoC that must be used when wanting to visualize
@@ -28,7 +30,8 @@ class ValidatorsBloc extends Bloc<ValidatorsEvent, ValidatorsState> {
         // Notify we got the list
         yield ValidatorsLoadedState(validators: validators);
       } catch (exception) {
-        print("Error while loading the validators: $exception");
+        print("Error while loading the validators.");
+        print(exception);
 
         // Notify an error has occurred
         yield ValidatorsErrorState();

@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:borsellino/models/models.dart';
-import 'package:borsellino/models/validators/validator_filter.dart';
 import 'package:borsellino/source/sources.dart';
-import 'package:borsellino/source/utils.dart';
 import 'package:borsellino/source/validators/apis.dart';
-import 'package:borsellino/source/validators/validator_converter.dart';
-import 'package:borsellino/source/validators/validator_json.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:sacco/sacco.dart';
 import 'package:sprintf/sprintf.dart';
+
+import 'validator_converter.dart';
+import 'validator_json.dart';
+
+export 'validator_converter.dart';
 
 /// Source that should be used when retrieving data related to
 /// validators.
 class ValidatorSource {
-  final AccountsSource accountsSource;
+  final AccountSource accountsSource;
   final http.Client httpClient;
 
   final ValidatorConverter converter;
@@ -29,18 +31,18 @@ class ValidatorSource {
         assert(converter != null);
 
   /// Returns the chain information for the currently selected account.
-  Future<ChainInfo> _getChainInfo() async {
+  Future<NetworkInfo> _getNetworkInfo() async {
     final account = await accountsSource.getCurrentAccount();
     if (account == null) {
       throw Exception("Null account");
     }
-    return account.chain;
+    return account.wallet.networkInfo;
   }
 
   /// Returns the list of all the validators satisfying the given [filter].
   Future<List<Validator>> getValidators(ValidatorFilter filter) async {
     // Get the chain info
-    final chain = await _getChainInfo();
+    final chain = await _getNetworkInfo();
 
     // Get the API url based on the account chain
     var apiUrl = sprintf(ValidatorsEndpoints.LIST, [chain.lcdUrl]);
@@ -70,11 +72,21 @@ class ValidatorSource {
     checkResponse(response);
 
     // If the server returns OK, parse the JSON
-    final validatorsList = json.decode(response.body) as List;
+    dynamic json = jsonDecode(response.body);
+    if (json == null) {
+      json = List();
+    }
+
+    if (json is Map<String, dynamic> && json.containsKey("height")) {
+      json = json["result"];
+    }
 
     // Get the JSON objects
-    final validatorJsons =
-        validatorsList.map((object) => ValidatorJson.fromMap(object)).toList();
+    final validatorJsons = (json as List)
+        .map((object) => ValidatorJson.fromMap(object))
+        .toList();
+
+    print(validatorJsons);
 
     // Get the real Validator entities
     return converter.convert(validatorJsons);
@@ -83,30 +95,15 @@ class ValidatorSource {
   /// Returns the [String] representing the URL of the icon
   /// of the given [validator], or `null` if nothing can be found.
   Future<String> getValidatorImageUrl(Validator validator) async {
-    // Get the chain info
-    final chain = await _getChainInfo();
-
-    // Get the details URL
-    final detailsApi = sprintf(
-      ValidatorsEndpoints.DETAILS,
-      [chain.lcdUrl, validator.address],
-    );
-
-    // Get the details of the validator
-    final response = await httpClient.get(detailsApi);
-    checkResponse(response);
-
-    // Extract the identity data
-    final validatorInfo = json.decode(response.body) as Map<String, dynamic>;
-    final identity = validatorInfo["description"]["identity"] as String;
-
-    // If the identity is empty return null
-    if (identity.isEmpty) {
+    if (validator.identity
+        .trim()
+        .isEmpty) {
       return null;
     }
 
     // Get the autocompletion API response
-    final keyApi = sprintf(ValidatorsEndpoints.ICON, [identity]);
+    final keyApi = sprintf(ValidatorsEndpoints.ICON, [validator.identity]);
+
     final keyBaseResponse = await httpClient.get(keyApi);
     checkResponse(keyBaseResponse);
 

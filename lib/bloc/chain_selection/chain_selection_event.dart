@@ -8,4 +8,3 @@ abstract class ChainSelectionEvent extends Equatable {
 
 /// Event that is emitted when the chains needs to be loaded.
 class LoadChainsEvent extends ChainSelectionEvent {}
-

@@ -1,9 +1,10 @@
 import 'package:borsellino/bloc/blocs.dart';
 import 'package:borsellino/bloc/wallet_overview/wallet_overview_bloc.dart';
+import 'package:borsellino/models/models.dart';
+import 'package:borsellino/pages/account_generation/account_generation_page.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/pages/wallet_overview/wallet_overview_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:borsellino/models/models.dart';
 
 // Bloc provider that allows to create a Validators Page easily
 BlocProvider validatorBlockProvider(ValidatorFilter filter) {
@@ -59,5 +60,12 @@ BlocProvider sendCoinsBlocProvider() {
   return BlocProvider<SendCoinsBloc>(
     builder: (context) => SendCoinsBloc(),
     child: SendCoinsPage(),
+  );
+}
+
+BlocProvider accountGenerationBlockProvider() {
+  return BlocProvider<AccountGenerationBloc>(
+    builder: (context) => AccountGenerationBloc(),
+    child: AccountGenerationPage(),
   );
 }

@@ -1,15 +1,4 @@
 export 'account/account.dart';
-export 'chain/chain_info.dart';
+export 'account/delegations.dart';
 export 'validators/validator.dart';
 export 'validators/validator_filter.dart';
-export 'package:borsellino/models/transactions/std_coin.dart';
-export 'wallet/wallet.dart';
-export 'wallet/delegations.dart';
-export 'transactions/std_coin.dart';
-export 'transactions/std_fee.dart';
-export 'transactions/std_msg.dart';
-export 'transactions/std_public_key.dart';
-export 'transactions/std_signature.dart';
-export 'transactions/std_signature_message.dart';
-export 'transactions/std_tx.dart';
-export 'transactions/messages/msg_send.dart';

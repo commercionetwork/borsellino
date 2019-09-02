@@ -1,171 +1,140 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 
-import 'package:borsellino/models/models.dart';
-import 'package:borsellino/models/transactions/std_coin.dart';
 import 'package:borsellino/source/sources.dart';
-import 'package:borsellino/source/utils.dart';
-import 'package:borsellino/source/wallet/models/account_data.dart';
-import 'package:borsellino/source/wallet/wallet_endpoints.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:sprintf/sprintf.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sacco/sacco.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
-/// Class that must be used when dealing with wallet information.
+/// Source that must be used when dealing with wallets.
 class WalletSource {
-  final http.Client httpClient;
-  final AccountsSource accountsSource;
+  static const DERIVATION_PATH = "m/44'/118'/0'/0/0";
+
+  final KeysSource keysSource;
+  final ChainsSource chainsSource;
 
   WalletSource({
-    @required this.httpClient,
-    @required this.accountsSource,
-  })  : assert(httpClient != null),
-        assert(accountsSource != null);
+    @required this.keysSource,
+    @required this.chainsSource,
+  })
+      : assert(chainsSource != null),
+        assert(keysSource != null);
 
-  /// Reads the account endpoint and retrieves data from it.
-  Future<AccountData> _getAccountData(Account account) async {
-    print("Getting account data");
+  // Store reference to save all the wallets
+  final StoreRef<dynamic, dynamic> _walletsStore = StoreRef("wallets");
 
-    // Build the wallet api url
-    final endpoint = sprintf(WalletEndpoints.ACCOUNT, [account.bech32Address]);
+  // Store reference to save the current wallet
+  final StoreRef<dynamic, dynamic> _currentWalletStore =
+  StoreRef("current_wallet");
 
-    // Build the API URL
-    final apiUrl = "${account.chain.lcdUrl}$endpoint";
+  // Current wallet key used inside the store
+  static const _currentWalletKey = "currentWallet";
 
-    // Get the server response
-    final response = await httpClient.get(apiUrl);
-    checkResponse(response);
+  /// Returns the reference to the database of the wallets
+  Future<Database> _getDatabase() async {
+    Directory folder = await getApplicationDocumentsDirectory();
+    String dbPath = "wallets.db";
 
-    // Parse the data
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final value = json["value"] as Map<String, dynamic>;
+    DatabaseFactory dbFactory = createDatabaseFactoryIo(rootPath: folder.path);
+    return await dbFactory.openDatabase(dbPath, version: 1);
+  }
 
-    // Get the coins
-    final coins = ((value["coins"] as List) ?? List())
-        .map((coinMap) => StdCoin.fromJson(coinMap))
-        .toList();
+  Future<Wallet> _saveWallet(Wallet wallet, NetworkInfo chain) async {
+    // Save the wallet
+    final database = await _getDatabase();
 
-    return AccountData(
-      accountNumber: value["account_number"],
-      sequence: value["sequence"],
-      coins: coins,
+    // Store the data
+    await _walletsStore.record(wallet.bech32Address).put(
+      database,
+      wallet.toJson(),
+      merge: true,
     );
+
+    // Return the wallet after storing
+    await keysSource.saveWalletPrivateKey(
+      wallet.bech32Address,
+      wallet.privateKey,
+    );
+
+    return wallet;
   }
 
-  /// Retrieves the data of the delegations that an account has made
-  Future<List<DelegationData>> _getDelegationsData(Account account) async {
-    print("Getting delegators data");
-
-    // Get the endpoint
-    final endpoint = sprintf(WalletEndpoints.DELEGATIONS, [account.bech32Address]);
-
-    // Build the API URL
-    final apiUrl = "${account.chain.lcdUrl}$endpoint";
-
-    // Get the response
-    final response = await httpClient.get(apiUrl);
-    checkResponse(response);
-
-    // Parse the data
-    final json = (jsonDecode(response.body) as List) ?? List();
-    return json.map((object) {
-      return DelegationData(
-        validator: object["validator_address"],
-        shares: double.parse(object["shares"]),
-      );
-    }).toList();
-  }
-
-  /// Retrieves all the unbonding delegations
-  Future<List<UnbondingDelegation>> _getUnbondingDelegations(
-    Account account,
+  /// Generates and stores a wallet associated to the given [mnemonic] for
+  /// the given [chain].
+  /// Returns the wallet one it has been stored.
+  Future<Wallet> createAndStoreWallet(List<String> mnemonic,
+      NetworkInfo chain,
   ) async {
-    print("Getting unbonding data");
+    final wallet = Wallet.derive(mnemonic, DERIVATION_PATH, chain);
 
-    // Get the endpoint
-    final endpoint = sprintf(
-      WalletEndpoints.UNBONDING_DELEGATIONS,
-      [account.bech32Address],
+    // Create and save the wallet
+    return await _saveWallet(wallet, chain);
+  }
+
+  /// Converts the given [wallet] into a new one made for the given [chain].
+  Future<Wallet> convertAndStoreWallet(Wallet wallet,
+      NetworkInfo chain,) async {
+    // Generate a new wallet
+    final newWallet = Wallet.convert(wallet, chain);
+
+    // Save the new wallet
+    return await _saveWallet(newWallet, chain);
+  }
+
+  /// Allows to set the given [wallet] as the currently used wallet.
+  Future<void> saveWalletAsCurrent(Wallet wallet) async {
+    // Get the database
+    final database = await _getDatabase();
+
+    // Store the data
+    await _currentWalletStore.record(_currentWalletKey).put(
+      database,
+      wallet == null ? null : wallet.toJson(),
     );
-
-    // Build the API URL
-    final apiUrl = "${account.chain.lcdUrl}$endpoint";
-
-    // Get the response
-    final response = await httpClient.get(apiUrl);
-    checkResponse(response);
-
-    // Parse the data
-    final json = (jsonDecode(response.body) as List) ?? List();
-    return json.map((object) {
-      return UnbondingDelegation(
-        balance: double.parse(object["balance"]),
-        validator: object["validator_address"],
-      );
-    }).toList();
   }
 
-  Future<List<StdCoin>> _getRewards(Account account) async {
-    print("Getting rewards data");
+  /// Returns the list of all the wallets securely stored into the device.
+  Future<List<Wallet>> listWallets() async {
+    // Get the database
+    final database = await _getDatabase();
 
-    // Get the endpoint
-    final endpoint = sprintf(WalletEndpoints.REWARDS, [account.bech32Address]);
-
-    // Build the API URL
-    final apiUrl = "${account.chain.lcdUrl}$endpoint";
-
-    // Get the response
-    final response = await httpClient.get(apiUrl);
-    checkResponse(response);
-
-    // Parse the data
-    var rewards = [];
-    final json = jsonDecode(response.body);
-
-    // Sometimes the rewards are a map...
-    if (json is Map) {
-      // Read the data with fallback if null
-      if (json?.containsKey("total") == true) {
-        rewards = (json["total"] as List);
-      }
+    // List all the wallets
+    final records = await _walletsStore.find(database);
+    if (records.isEmpty) {
+      return List<Wallet>();
     }
 
-    // ...some other times the rewards are a list
-    if (json is List) {
-      rewards = json;
-    }
-
-    return rewards.map((object) => StdCoin.fromJson(object)).toList();
+    // Return the wallets list
+    return await Future.wait(records.map((item) async {
+      final key = await keysSource.getPrivateKeyFromAddress(item.key);
+      return Wallet.fromJson(item.value, key);
+    }));
   }
 
-  /// Allows to return the current wallet instance
+  /// Returns the current wallet, or null if no wallet could be found.
   Future<Wallet> getCurrentWallet() async {
-    // Get the current account
-    final account = await accountsSource.getCurrentAccount();
-    print("Getting data for account with address ${account.bech32Address}");
+    // Get the database
+    final database = await _getDatabase();
 
-    // Get all the data
-    final accountData = await _getAccountData(account);
-    print("Account data: $accountData");
+    // Read the data
+    final walletSnap =
+    await _currentWalletStore.record(_currentWalletKey).get(database);
 
-    final delegations = await _getDelegationsData(account);
-    print("Delegations: $delegations");
+    // If the current wallet is null, return null
+    if (walletSnap == null) {
+      return null;
+    }
 
-    final unbondingDelegations = await _getUnbondingDelegations(account);
-    print("Unbonding: $unbondingDelegations");
+    // Get the key
+    final key =
+    await keysSource.getPrivateKeyFromAddress(walletSnap['bech32_address']);
+    return Wallet.fromJson(walletSnap, key);
+  }
 
-    final rewards = await _getRewards(account);
-    print("Rewards: $rewards");
-
-    // Build the wallet
-    return Wallet(
-      account: account,
-      accountNumber: accountData.accountNumber,
-      sequence: accountData.sequence,
-      availableCoins: accountData.coins,
-      delegatedCoins: delegations,
-      unbondingDelegations: unbondingDelegations,
-      rewards: rewards,
-    );
+  /// Allows to logout setting the current wallet as null.
+  Future<void> logout() async {
+    return saveWalletAsCurrent(null);
   }
 }
