@@ -21,8 +21,6 @@ class LoadedChainsState extends ChainSelectionState {
   LoadedChainsState(this.chains) : super([chains]);
 }
 
-class GeneratingAccountState extends ChainSelectionState {}
-
 /// State that is set when there has been an error while
 /// loading the chains
 class ErrorChainsState extends ChainSelectionState {}

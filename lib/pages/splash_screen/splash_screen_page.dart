@@ -11,8 +11,10 @@ class SplashScreenPage extends StatefulWidget {
 }
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
+
   var showSelectAccount = false;
   final AccountRepository repository = BorsellinoInjector.get();
+  bool hasAccount;
 
   @override
   void initState() {
@@ -27,7 +29,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
     // Try getting the current account and change
     // page accordingly to the result
-    _getCurrentAccount(context);
+    if (hasAccount == null) {
+      _getCurrentAccount(context);
+    }
 
     // Title text style
     const titleTextStyle = TextStyle(
@@ -130,7 +134,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   void _getAccounts() {
     repository.listAccounts().then((accounts) {
-      if (accounts != null && accounts.isNotEmpty) {
+      if (accounts != null && accounts.isNotEmpty && mounted) {
         setState(() {
           showSelectAccount = true;
         });
@@ -139,8 +143,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   }
 
   void _getCurrentAccount(BuildContext context) {
-    repository.getCurrentAccount().then((account) {
-      if (account != null) {
+    repository.hasCurrentAccount().then((hasAccount) {
+      this.hasAccount = hasAccount;
+      if (this.hasAccount) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomePage.routeName,

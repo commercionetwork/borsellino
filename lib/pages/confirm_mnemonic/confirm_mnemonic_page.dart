@@ -16,7 +16,7 @@ class ConfirmMnemonicPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ConfirmMnemonicBloc bloc = BlocProvider.of(context);
 
-    // Get the arguments
+    // Get the arguments.dart
     final VerifyMnemonicArguments args =
         ModalRoute.of(context).settings.arguments;
 

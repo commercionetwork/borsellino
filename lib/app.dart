@@ -1,5 +1,6 @@
 import 'package:borsellino/blocprov/blocproviders.dart';
 import 'package:borsellino/constants/constants.dart';
+import 'package:borsellino/pages/account_generation/account_generation_page.dart';
 import 'package:borsellino/pages/pages.dart';
 import 'package:borsellino/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ class BorsellinoApp extends StatelessWidget {
         ConfirmMnemonicPage.routeName: (context) => confirmMnemonicBlocProvider(),
         ChainSelectionPage.routeName: (context) => selectChainBlocProvider(),
         AccountSelectionPage.routeName: (context) => accountSelectionBlocProvider(),
-        ValidatorDetailsPage.routeName: (context) => ValidatorDetailsPage()
+        ValidatorDetailsPage.routeName: (context) => ValidatorDetailsPage(),
+        AccountGenerationPage.routeName: (context) =>
+            accountGenerationBlockProvider(),
       },
     );
   }

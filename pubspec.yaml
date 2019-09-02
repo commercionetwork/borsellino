@@ -16,6 +16,7 @@ dependencies:
   http: ^0.12.0
   basic_utils: ^1.2.0
   meta: ^1.1.7
+  shared_preferences: ^0.5.3+4
 
   # Crypto
   bip39: ^1.0.3

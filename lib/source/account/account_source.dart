@@ -13,6 +13,7 @@ import 'package:sacco/sacco.dart';
 import 'package:sacco/wallet.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
 /// Class that must be used when dealing with wallet information.
@@ -26,8 +27,11 @@ class AccountSource {
   })  : assert(httpClient != null),
         assert(walletSource != null);
 
+  final String _currentAccountKey = "current_account";
+
   // Store reference to save all the wallets
-  final StoreRef<String, Account> _accountsStore = StoreRef("accounts");
+  final StoreRef<String, Map<String, dynamic>> _accountsStore =
+  StoreRef("accounts");
 
   // Used to emit new current wallet values
   final StreamController<Account> _accountController =
@@ -42,27 +46,25 @@ class AccountSource {
     return await dbFactory.openDatabase(dbPath, version: 1);
   }
 
-  Future<Account> _convertWalletToAccountAndStore(Wallet wallet) async {
-    // Try search the database for the related account
+  Future<Account> _convertWalletToAccountAndStore(Wallet wallet, {
+    bool forceRefresh = false,
+  }) async {
     final database = await _getDatabase();
-    final accountSnap =
-        await _accountsStore.record(wallet.bech32Address).get(database);
-    if (accountSnap != null) {
-      return accountSnap;
+
+    if (forceRefresh == false) {
+      // Try search the database for the related account
+      final accountSnap =
+      await _accountsStore.record(wallet.bech32Address).get(database);
+      if (accountSnap != null) {
+        return Account.fromJson(accountSnap, wallet);
+      }
     }
 
     // Get all the data
     final accountData = await _getAccountData(wallet);
-    print("Account data: $accountData");
-
     final delegations = await _getDelegationsData(wallet);
-    print("Delegations: $delegations");
-
     final unbondingDelegations = await _getUnbondingDelegations(wallet);
-    print("Unbonding: $unbondingDelegations");
-
     final rewards = await _getRewards(wallet);
-    print("Rewards: $rewards");
 
     // Build the wallet
     final account = Account(
@@ -74,27 +76,30 @@ class AccountSource {
     );
 
     // Save the account
-    _accountsStore.record(wallet.bech32Address).put(database, account);
+    _accountsStore.record(wallet.bech32Address).put(database, account.toJson());
 
     return account;
   }
 
   /// Reads the account endpoint and retrieves data from it.
   Future<AccountData> _getAccountData(Wallet wallet) async {
-    print("Getting account data");
-
     // Build the wallet api url
     final endpoint = sprintf(AccountEndpoints.ACCOUNT, [wallet.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${wallet.networkInfo.lcdUrl}$endpoint";
+    print("Getting account data: $apiUrl");
 
     // Get the server response
     final response = await httpClient.get(apiUrl);
     checkResponse(response);
 
     // Parse the data
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    Map<String, dynamic> json = jsonDecode(response.body);
+    if (json.containsKey("height")) {
+      json = json["result"];
+    }
+
     final value = json["value"] as Map<String, dynamic>;
 
     // Get the coins
@@ -111,22 +116,29 @@ class AccountSource {
 
   /// Retrieves the data of the delegations that an account has made
   Future<List<DelegationData>> _getDelegationsData(Wallet wallet) async {
-    print("Getting delegators data");
-
     // Get the endpoint
     final endpoint =
         sprintf(AccountEndpoints.DELEGATIONS, [wallet.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${wallet.networkInfo.lcdUrl}$endpoint";
+    print("Getting delegators data: $apiUrl");
 
     // Get the response
     final response = await httpClient.get(apiUrl);
     checkResponse(response);
 
     // Parse the data
-    final json = (jsonDecode(response.body) as List) ?? List();
-    return json.map((object) {
+    dynamic json = jsonDecode(response.body);
+    if (json == null) {
+      json = List<dynamic>();
+    }
+
+    if (json is Map<String, dynamic> && json.containsKey("height")) {
+      json = json["result"];
+    }
+
+    return (json as List).map((object) {
       return DelegationData(
         validator: object["validator_address"],
         shares: double.parse(object["shares"]),
@@ -138,22 +150,29 @@ class AccountSource {
   Future<List<UnbondingDelegation>> _getUnbondingDelegations(
     Wallet wallet,
   ) async {
-    print("Getting unbonding data");
-
     // Get the endpoint
     final endpoint =
         sprintf(AccountEndpoints.UNBONDING_DELEGATIONS, [wallet.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${wallet.networkInfo.lcdUrl}$endpoint";
+    print("Getting unbonding data: $apiUrl");
 
     // Get the response
     final response = await httpClient.get(apiUrl);
     checkResponse(response);
 
     // Parse the data
-    final json = (jsonDecode(response.body) as List) ?? List();
-    return json.map((object) {
+    dynamic json = jsonDecode(response.body);
+    if (json == null) {
+      json = List<dynamic>();
+    }
+
+    if (json is Map<String, dynamic> && json.containsKey("height")) {
+      json = json["result"];
+    }
+
+    return (json as List).map((object) {
       return UnbondingDelegation(
         balance: double.parse(object["balance"]),
         validator: object["validator_address"],
@@ -162,13 +181,12 @@ class AccountSource {
   }
 
   Future<List<StdCoin>> _getRewards(Wallet wallet) async {
-    print("Getting rewards data");
-
     // Get the endpoint
     final endpoint = sprintf(AccountEndpoints.REWARDS, [wallet.bech32Address]);
 
     // Build the API URL
     final apiUrl = "${wallet.networkInfo.lcdUrl}$endpoint";
+    print("Getting rewards data: $apiUrl");
 
     // Get the response
     final response = await httpClient.get(apiUrl);
@@ -195,7 +213,7 @@ class AccountSource {
   }
 
   /// Allows to return the current wallet instance
-  Future<Account> getCurrentAccount() async {
+  Future<Account> getCurrentAccount({bool forceRefresh = false}) async {
     // Get the current account
     final wallet = await walletSource.getCurrentWallet();
     if (wallet == null) {
@@ -204,14 +222,25 @@ class AccountSource {
 
     print("Getting data for account with address ${wallet.bech32Address}");
 
-    return _convertWalletToAccountAndStore(wallet);
+    return _convertWalletToAccountAndStore(wallet, forceRefresh: forceRefresh);
   }
 
   /// Allows to set the given [wallet] as the currently used wallet.
   Future<Account> saveAccountAsCurrent(Account account) async {
-    await walletSource.saveWalletAsCurrent(account.wallet);
+    await walletSource.saveWalletAsCurrent(account?.wallet ?? null);
     _accountController.add(account);
+
+    final sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString(
+        _currentAccountKey, account?.wallet?.bech32Address);
+
     return account;
+  }
+
+  /// Returns [true] iff there is a current account set.
+  Future<bool> hasCurrentAccount() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.containsKey(_currentAccountKey);
   }
 
   /// Returns the list of all the wallets securely stored into the device.

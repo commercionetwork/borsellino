@@ -32,7 +32,7 @@ class WalletOverviewBloc
 
       try {
         // Get the wallet
-        final wallet = await accountRepo.getCurrentAccount();
+        final wallet = await accountRepo.getCurrentAccount(forceRefresh: true);
         print("Retrieved current wallet");
 
         // Tell that we loaded it

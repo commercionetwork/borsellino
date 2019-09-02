@@ -32,8 +32,13 @@ class AccountRepository {
   }
 
   /// Returns the current account, or null if no current account is set.
-  Future<Account> getCurrentAccount() {
-    return accountSource.getCurrentAccount();
+  Future<Account> getCurrentAccount({bool forceRefresh = false}) {
+    return accountSource.getCurrentAccount(forceRefresh: forceRefresh);
+  }
+
+  /// Returns true iff there is a current account set.
+  Future<bool> hasCurrentAccount() {
+    return accountSource.hasCurrentAccount();
   }
 
   /// Returns the list of all the wallets securely stored into the device.

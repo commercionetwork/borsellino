@@ -102,6 +102,9 @@ class WalletSource {
 
     // List all the wallets
     final records = await _walletsStore.find(database);
+    if (records.isEmpty) {
+      return List<Wallet>();
+    }
 
     // Return the wallets list
     return await Future.wait(records.map((item) async {

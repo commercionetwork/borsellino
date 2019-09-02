@@ -8,7 +8,13 @@ android {
         }
     }
 
-    defaultConfig {
-        signingConfig signingConfigs.config
+    buildTypes {
+        release {
+            signingConfig signingConfigs.config
+
+            minifyEnabled false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 }

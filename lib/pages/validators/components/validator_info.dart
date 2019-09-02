@@ -1,4 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:borsellino/constants/constants.dart';
 import 'package:borsellino/models/models.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,10 @@ class ValidatorInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Voting power"),
-              Text("${_validator.tokens.toStringAsFixed(6)}"),
+              Text(
+                "${(_validator.tokens * TOKEN_MULTIPLICATION_FACTOR)
+                    .toStringAsFixed(6)}",
+              ),
             ],
           ),
           Row(

@@ -72,11 +72,21 @@ class ValidatorSource {
     checkResponse(response);
 
     // If the server returns OK, parse the JSON
-    final validatorsList = json.decode(response.body) as List;
+    dynamic json = jsonDecode(response.body);
+    if (json == null) {
+      json = List();
+    }
+
+    if (json is Map<String, dynamic> && json.containsKey("height")) {
+      json = json["result"];
+    }
 
     // Get the JSON objects
-    final validatorJsons =
-        validatorsList.map((object) => ValidatorJson.fromMap(object)).toList();
+    final validatorJsons = (json as List)
+        .map((object) => ValidatorJson.fromMap(object))
+        .toList();
+
+    print(validatorJsons);
 
     // Get the real Validator entities
     return converter.convert(validatorJsons);
@@ -85,30 +95,15 @@ class ValidatorSource {
   /// Returns the [String] representing the URL of the icon
   /// of the given [validator], or `null` if nothing can be found.
   Future<String> getValidatorImageUrl(Validator validator) async {
-    // Get the chain info
-    final chain = await _getNetworkInfo();
-
-    // Get the details URL
-    final detailsApi = sprintf(
-      ValidatorsEndpoints.DETAILS,
-      [chain.lcdUrl, validator.address],
-    );
-
-    // Get the details of the validator
-    final response = await httpClient.get(detailsApi);
-    checkResponse(response);
-
-    // Extract the identity data
-    final validatorInfo = json.decode(response.body) as Map<String, dynamic>;
-    final identity = validatorInfo["description"]["identity"] as String;
-
-    // If the identity is empty return null
-    if (identity.isEmpty) {
+    if (validator.identity
+        .trim()
+        .isEmpty) {
       return null;
     }
 
     // Get the autocompletion API response
-    final keyApi = sprintf(ValidatorsEndpoints.ICON, [identity]);
+    final keyApi = sprintf(ValidatorsEndpoints.ICON, [validator.identity]);
+
     final keyBaseResponse = await httpClient.get(keyApi);
     checkResponse(keyBaseResponse);
 

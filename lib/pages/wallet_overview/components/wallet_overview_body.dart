@@ -11,7 +11,7 @@ import 'package:sacco/sacco.dart';
 class WalletOverviewBody extends StatelessWidget {
   final Account wallet;
 
-  WalletOverviewBody(this.wallet);
+  WalletOverviewBody(this.wallet) : assert(wallet != null);
 
   @override
   Widget build(BuildContext context) {

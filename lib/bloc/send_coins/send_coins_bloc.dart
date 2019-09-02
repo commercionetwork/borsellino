@@ -79,38 +79,34 @@ class SendCoinsBloc extends Bloc<SendCoinsEvent, SendCoinsState> {
     // Build the fee
     final fee = StdFee(gas: "200000", amount: [
       StdCoin(
-        amount: (sendData.feeAmount * TOKEN_MULTIPLICATION_FACTOR).toString(),
+        amount: (sendData.feeAmount * TOKEN_MULTIPLICATION_FACTOR)
+            .toInt()
+            .toString(),
         denom: coinDenom,
       )
     ]);
 
     // Build the amount
     final amount = StdCoin(
-      amount: (sendData.amount * TOKEN_MULTIPLICATION_FACTOR).toString(),
+      amount: (sendData.amount * TOKEN_MULTIPLICATION_FACTOR_REVERSE)
+          .toInt()
+          .toString(),
       denom: coinDenom,
     );
 
-    // Build the standard message
-    final stdMessage = StdMsg(
-      type: "cosmos-sdk/MsgSend",
-      value: MsgSend(
-        amount: [amount],
-        fromAddress: account.wallet.bech32Address,
-        toAddress: sendData.recipient,
-      ).toJson(),
+    // Build the message
+    final message = MsgSend(
+      amount: [amount],
+      fromAddress: account.wallet.bech32Address,
+      toAddress: sendData.recipient,
     );
 
     // Create the StdTx
-    final stdTx = txRepo.createStdTx(message: stdMessage, fee: fee);
+    final stdTx = txRepo.createStdTx(message: message, fee: fee);
 
-    // Sign the StdTx
-    final signedTx = await txRepo.signStdTx(account: account, stdTx: stdTx);
-
-    // Try broadcasting the transaction
-    final txHash = await txRepo.broadcastTx(
-      transaction: signedTx,
-      account: account,
-    );
-    return txHash;
+    // Sign and broadcast the StdTx
+    return txRepo.signStdTx(account: account, stdTx: stdTx).then((signed) {
+      return txRepo.broadcastTx(transaction: signed, account: account);
+    });
   }
 }

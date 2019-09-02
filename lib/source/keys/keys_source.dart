@@ -23,7 +23,7 @@ class KeysSource {
 
   /// Given an [account], returns the associated private key reading it
   /// from the secure storage.
-  Future<Uint8List> getPrivateKeyFromAddress(String bech32Address,) async {
+  Future<Uint8List> getPrivateKeyFromAddress(String bech32Address) async {
     final hexPrivateKey = await secureStorage.read(key: bech32Address);
     return HEX.decode(hexPrivateKey);
   }
